@@ -1,0 +1,30 @@
+{
+  "author": {
+    "email": "marcosrava@gmail.com",
+    "name": "Marcos Rava"
+  },
+  "name": "model",
+  "version": "0.0.1",
+  "repository": {
+    "url": "https://github.com/marcosrava/model"
+  },
+  "main": "./index.js",
+  "keywords": [
+    "swagger",
+    "models",
+    "schema",
+    "bookshielf"
+  ],
+  "description": "Models based on schema",
+  "dependencies": {
+    "moment": "^2.6.0",
+    "validate.js": "^0.2.0",
+    "extend": "^1.2.1"
+  },
+  "engines": {
+    "node": "*"
+  },
+  "devDependencies": {
+    "mocha": "^1.20.0"
+  }
+}
