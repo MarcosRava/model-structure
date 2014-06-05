@@ -11,11 +11,10 @@
   if (window) {
     window.Model = Model;
     window.Validator = Validator;
-
-    if (define && define.amd) {
-      define("Model", [], function () { return Model; });
-      define("Validator", [], function () { return Validator; });
-    }
+  }
+  if (define && define.amd) {
+    define("Model", [], function () { return Model; });
+    define("Validator", [], function () { return Validator; });
   }
 }).call(this,
         typeof exports !== 'undefined' ? exports : null,
