@@ -1,10 +1,8 @@
 var Validator;
 var validate = require('validate.js');
-var validatorMessages = require('./validator-messages');
 var validateOptions = {fullMessages : false};
 
 module.exports = Validator = (function () {
-
 
   function Validator(args) {
     args = args || {};
@@ -13,8 +11,6 @@ module.exports = Validator = (function () {
     this.validate = args.validate;
     Validator.prototype.isValid = isValid;
   }
-
-  Validator.messages = validatorMessages;
 
   return Validator;
 
