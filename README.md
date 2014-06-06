@@ -4,7 +4,7 @@
 
  * Set a custom repository to save, update, create and delete.
  * Get swagger models
- * Get bookshelf creation JSON
+ * Get db-migrate JSON
  * Nested objects support (validations too!)
  * Call validations before create and save or standalone
  * Custom validations sync or async based on validatejs schema

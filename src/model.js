@@ -35,7 +35,7 @@ function _init_(_this, args) {
 
 var accessFunctions = {
   "swagger" : swaggerHelper.getSwagger,
-  "bookshelf": dbHelper.getSchema
+  "db-migrate": dbHelper.getSchema
 };
 
 function initialize(args, schema) {

@@ -18,36 +18,31 @@ function showError(e) {
 
 }
 
-gulp.task('scripts', function() {
+gulp.task('scripts', function () {
   gulp.src(['./index.js'])
     .pipe(browserify())
     .on('error', showError)
-    .pipe(uglify())
-    .pipe(concat('model-npm install-min.js'))
+    .pipe(concat('model-structure.js'))
     .pipe(gulp.dest('./dist/'))
-    .pipe(refresh(server));
-
-  gulp.src(['./index.js'])
-    .pipe(browserify())
-    .on('error', showError)
-    .pipe(concat('model-npm install.js'))
+    .pipe(uglify())
+    .pipe(concat('model-structure-min.js'))
     .pipe(gulp.dest('./dist/'))
     .pipe(refresh(server));
 });
 
-gulp.task('lr-server', function() {
-  server.listen(35710, function(err) {
+gulp.task('lr-server', function () {
+  server.listen(35710, function (err) {
     if (err) return console.log(err, err.stack);
   });
 });
 
-gulp.task('default', ['scripts', 'lr-server'], function() {
+gulp.task('default', ['scripts', 'lr-server'], function () {
 
   gulp.watch(['./src/**'], ['scripts']);
 
 });
 
-gulp.task('build', function() {
+gulp.task('build', function () {
 
   __BUILD = true;
 

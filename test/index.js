@@ -60,5 +60,5 @@ customer.create(function (err, data) {
 
 });
 //console.log(JSON.stringify(customer.access('swagger'), null, 1));
-//console.log(JSON.stringify(customer.access('bookshelf'), null, 1));
+//console.log(JSON.stringify(customer.access('db-migrate'), null, 1));
 

@@ -6,14 +6,14 @@
   "name": "model",
   "version": "0.0.1",
   "repository": {
-    "url": "https://github.com/marcosrava/model"
+    "url": "https://github.com/MarcosRava/model-structure"
   },
   "main": "./index.js",
   "keywords": [
     "swagger",
     "models",
     "schema",
-    "bookshielf"
+    "db-migrate"
   ],
   "description": "Models based on schema",
   "dependencies": {
