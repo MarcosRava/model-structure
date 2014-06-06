@@ -3,10 +3,8 @@ var Model = model.Model;
 
 var Customer = (function (_super) {
   function Customer(args) {
-    //Customer.prototype.initialize.call(this, args);
     _super._init_(this, args);
   }
-  //Customer.prototype = _super.prototype;
   Customer.schema = {
     messages: {
       integer: "Generic validation message"

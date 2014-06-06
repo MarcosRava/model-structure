@@ -18,7 +18,6 @@ function getValidation(schema, attr) {
     case "string":
       break;
     case "email":
-      console.log(prop.message, 'mmm');
       msg = (prop.message || messages.email);
       obj.email = msg ? {message: msg} : true;
       break;

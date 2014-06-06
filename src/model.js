@@ -30,6 +30,7 @@ module.exports = Model = (function () {
 
 function _init_(_this, args) {
   extend(true, _this.constructor.prototype, Model.prototype);
+  _this.constructor.prototype._super = Model;
   initialize.call(_this, args);
 }
 
