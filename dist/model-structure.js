@@ -9,19 +9,20 @@
     exports.Model = Model;
     exports.Validator = Validator;
   }
-  if (root.window) {
-    root.window.Model = Model;
-    root.window.Validator = Validator;
+  if (this.window && window) {
+    window.Model = Model;
+    window.Validator = Validator;
   }
   if (define && define.amd) {
     define("Model", [], function () { return Model; });
     define("Validator", [], function () { return Validator; });
   }
-}).call(this,
-        typeof exports !== 'undefined' ? exports : null,
-        typeof module !== 'undefined' ? module : null,
-        typeof define !== 'undefined' ? define : null,
-        typeof require !== 'undefined' ? require : null);
+})(
+    typeof exports !== 'undefined' ? exports : null,
+    typeof module !== 'undefined' ? module : null,
+    typeof define !== 'undefined' ? define : null,
+    typeof require !== 'undefined' ? require : null
+);
 
 },{"./src/model":9,"./src/validator":11}],2:[function(require,module,exports){
 var hasOwn = Object.prototype.hasOwnProperty;
