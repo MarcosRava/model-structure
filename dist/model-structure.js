@@ -9,9 +9,9 @@
     exports.Model = Model;
     exports.Validator = Validator;
   }
-  if (window) {
-    window.Model = Model;
-    window.Validator = Validator;
+  if (root.window) {
+    root.window.Model = Model;
+    root.window.Validator = Validator;
   }
   if (define && define.amd) {
     define("Model", [], function () { return Model; });
