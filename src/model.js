@@ -1,12 +1,17 @@
-
-var Validator = require('./validator');
-var Repository = require('./repository.js');
-var swaggerHelper = require('./helpers/swagger-helper.js');
+var Validator        = require('./validator');
+var Repository       = require('./repository.js');
+var swaggerHelper    = require('./helpers/swagger-helper.js');
 var validationHelper = require('./helpers/validator-helper.js');
-var propertyHelper = require('./helpers/property-helper.js');
-var dbHelper = require('./helpers/db-helper.js');
-var extend = require('extend');
+var propertyHelper   = require('./helpers/property-helper.js');
+var dbHelper         = require('./helpers/db-helper.js');
+var extend           = require('extend');
 var Model;
+
+var publicHelpers = {
+  swagger  : swaggerHelper.getSwagger,
+  dbMigrate: dbHelper.getSchema
+};
+
 module.exports = Model = (function () {
 
   function Model(args) {
@@ -14,13 +19,19 @@ module.exports = Model = (function () {
     throw new Error("Cannot instantiate this class");
   }
 
-  Model._init_ = _init_;
+  function getSchema(schemaName, modelSchema) {
+    return publicHelpers[schemaName](modelSchema);
+  }
+
+  Model._init_    = _init_;
+  Model.getSchema = getSchema;
+
   Model.prototype.initialize = initialize;
-  Model.prototype.create = create;
-  Model.prototype.get = get;
-  Model.prototype.update = update;
-  Model.prototype.destroy = destroy;
-  Model.prototype.isValid = isValid;
+  Model.prototype.create     = create;
+  Model.prototype.get        = get;
+  Model.prototype.update     = update;
+  Model.prototype.destroy    = destroy;
+  Model.prototype.isValid    = isValid;
 
   this.validators = [];
 
