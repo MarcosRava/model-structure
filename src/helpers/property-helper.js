@@ -1,4 +1,5 @@
 exports.defineGetSet = defineGetSet;
+
 var moment = require('moment');
 
 function defineGetSet(schema, attr) {
@@ -29,14 +30,15 @@ function defineDate(prop, attr) {
     },
     set: function (val) {
       if (!val) {
-        value = undefined;
+        value = null;
         return;
       }
       if (typeof val === 'object' && val.constructor === Date)
         value = moment(val).utc().format('YYYY-MM-DD');
       else if (String(val).match(matchDate))
         value = String(val);
-      else throw new Error("Should be a Date object or string in format yyyy-MM-dd");
+      else value = 'Inválid date';
+        //throw new Error("Should be a Date object or string in format yyyy-MM-dd");
     },
     enumerable: true
   };
@@ -89,4 +91,3 @@ function defineList(ListModel, attr) {
   if (this.__lookupSetter__(attr)) delete getSet.set;
   Object.defineProperty(this, attr, getSet);
 }
-

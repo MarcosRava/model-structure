@@ -26,7 +26,6 @@ module.exports = Model = (function () {
   Model._init_    = _init_;
   Model.getSchema = getSchema;
 
-  Model.prototype.initialize = initialize;
   Model.prototype.create     = create;
   Model.prototype.get        = get;
   Model.prototype.update     = update;
@@ -54,6 +53,15 @@ function initialize(args, schema) {
   var data = args || {};
   var schemaValidation = {};
   var ref = this.constructor;
+
+  function access(key) {
+    if (key === 'privates') return schema;
+    var func = accessFunctions[key];
+    if (func)
+      return func.call(this, schema);
+    return schema[key];
+  }
+
   schema = schema || extend(true, {}, ref.schema);
   for (var attr in schema.properties) {
     propertyHelper.defineGetSet.call(this, schema, attr);
@@ -67,18 +75,11 @@ function initialize(args, schema) {
 
   if (data.validators && data.validators.constructor === Array)
     schema.validators = schema.validators.concat(data.validators);
-  this.access = access;
-
-  schema.repository = data.repository || schema.repository || new Repository();
+  this.constructor.prototype.access = access;
+  var DefaultRepository = ref.repository || Model.repository || Repository;
+  schema.repository = data.repository || schema.repository ||new DefaultRepository();
   schema.ref = ref;
   schema.name = ref.name;
-  function access(key) {
-    if (key === 'privates') return schema;
-    var func = accessFunctions[key];
-    if (func)
-      return func.call(this, schema);
-    return schema[key];
-  }
 }
 
 function create(callback) {
@@ -90,7 +91,7 @@ function create(callback) {
       return;
     }
     repository.create.call(_this, function (err, data) {
-      _this.initialize(data, _this.access('privates'));
+      initialize.call(_this, data, _this.access('privates'));
       callback(err, data);
     });
   });
@@ -105,8 +106,9 @@ function get() {
       if (typeof callback === 'function') callback(err);
       return;
     }
-    if (data && data.constructor !== Array)
-      _this.initialize(data, _this.access('privates'));
+    if (data && data.constructor !== Array) {
+      initialize.call(_this, data, _this.access('privates'));
+    }
     if (typeof callback === 'function') callback(err, data);
   });
 }
@@ -120,8 +122,9 @@ function update(callback) {
       return;
     }
     repository.update.call(_this, function (err, data) {
-      if (data && data.constructor !== Array)
-        _this.initialize(data, _this.access('privates'));
+      if (data && data.constructor !== Array) {
+        initialize.call(_this, data, _this.access('privates'));
+      }
       callback(err, data);
     });
   });
