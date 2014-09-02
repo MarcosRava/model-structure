@@ -15,7 +15,8 @@ describe('Validation', function(){
     it('should show email error message', function(done) {
       var customer = this.getCustomerFactory({email: 'not@email'});
       customer.isValid(function(err) {
-        expect(err.email).to.contain('is not a valid email!!');
+        expect(err[0].field).to.be('email');
+        expect(err[0].message).to.contain('is not a valid email!!');
         done();
       });
     });

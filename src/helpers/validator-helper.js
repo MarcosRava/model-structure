@@ -1,16 +1,24 @@
 var Validator = require('../validator');
-
+var patterns = {
+  EMAIL : /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+};
 exports.getValidation = getValidation;
 
 function getValidation(schema, attr) {
   var messages = schema.messages || {};
   var prop = schema.properties[attr];
-  var obj = {};
-  //var messages = validatorMessages[schema.name] ? validatorMessages[schema.name][attr] : {};
+  var obj = {type: prop.type};
+  obj.message = schema.properties[attr].message || messages[obj.type];
   if (prop.length) {
-    obj.length = prop.length;
-    obj.length.tooShort = obj.length.tooShort || (messages.length ? messages.length.tooShort : "");
-    obj.length.tooLong = obj.length.tooLong || (messages.length ? messages.length.tooLong : "");
+    if (typeof prop.length === 'object') {
+      //obj.min = obj.length.tooShort || (messages.length ? messages.length.tooShort : "");
+      //obj.max = obj.length.tooLong || (messages.length ? messages.length.tooLong : "");
+      obj.min = prop.length.minimum;
+      obj.max = prop.length.maximum;
+    }
+    else {
+      obj.len = prop.length;
+    }
 
   }
   var msg;
@@ -18,19 +26,15 @@ function getValidation(schema, attr) {
     case "string":
       break;
     case "email":
-      msg = (prop.message || messages.email);
-      obj.email = msg ? {message: msg} : true;
+      obj.type = "string";
+      obj.pattern = patterns.EMAIL;
       break;
     case "integer":
-      obj.numericality = {
-        onlyInteger: true,
-        message: prop.message || messages.integer
-      };
+      obj.required = false;
       break;
     case "decimal":
     case "float":
-      msg = (prop.message || messages.numericality);
-      obj.numericality = msg ? {message: msg} : true;
+      obj.type = "float";
       break;
     case "array":
       if (prop.model)

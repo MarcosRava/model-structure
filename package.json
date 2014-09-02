@@ -4,7 +4,7 @@
     "name": "Marcos Rava"
   },
   "name": "model-structure",
-  "version": "0.1.0",
+  "version": "0.1.10",
   "repository": {
     "url": "https://github.com/MarcosRava/model-structure"
   },
@@ -19,7 +19,7 @@
   "dependencies": {
     "extend": "^1.2.1",
     "moment": "^2.6.0",
-    "validate.js": "^0.2.0"
+    "async-validation" : "git+https://github.com/freeformsystems/async-validate"
   },
   "scripts": {
     "test": "mocha"

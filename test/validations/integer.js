@@ -15,7 +15,8 @@ describe('Validation', function(){
     it('should show integer error message', function(done) {
       var customer = this.getCustomerFactory({age: 'not Age'});
       customer.isValid(function(err) {
-        expect(err.age).to.contain('Integer error message');
+        expect(err[0].field).to.be('age');
+        expect(err[0].message).to.contain('Integer error message');
         done();
       });
     });
