@@ -4,5 +4,6 @@
   "email" : "test@marcosrava.com",
   "age" : 21,
   "hands" : 2,
-  "birthDate": "1993-07-31"
+  "birthDate": "1993-07-31",
+  "gender": "M"
 }

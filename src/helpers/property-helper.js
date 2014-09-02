@@ -13,9 +13,9 @@ function defineGetSet(schema, attr) {
     case "date":
       defineDate.call(this, prop, attr);
       break;
-    case "enum":
-      defineEnum.call(this, prop.values, attr);
-      break;
+//    case "enum":
+//      defineEnum.call(this, prop.values, attr);
+//      break;
     default:
       break;
   }
@@ -35,9 +35,9 @@ function defineDate(prop, attr) {
       }
       if (typeof val === 'object' && val.constructor === Date)
         value = moment(val).utc().format('YYYY-MM-DD');
-      else if (String(val).match(matchDate))
+      else if (String(val).match(matchDate) && moment(val, 'YYYY-MM-DD', true).utc().isValid())
         value = String(val);
-      else value = 'Inválid date';
+      else value = 'Invalid date';
         //throw new Error("Should be a Date object or string in format yyyy-MM-dd");
     },
     enumerable: true

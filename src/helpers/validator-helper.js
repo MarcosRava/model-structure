@@ -1,6 +1,6 @@
 var Validator = require('../validator');
 var patterns = {
-  EMAIL : /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  EMAIL : /^[a-z0-9\u007F-\uffff!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9\u007F-\uffff!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/,
 };
 exports.getValidation = getValidation;
 
@@ -23,7 +23,23 @@ function getValidation(schema, attr) {
   }
   var msg;
   switch (prop.type) {
+    case "enum":
+      if (prop.values.ref.constructor === Array) {
+        obj.enum = prop.values.ref;
+      }
+      else {
+        var refs = [];
+        for(var e in  prop.values.ref) {
+          refs.push(prop.values.ref[e]);
+        }
+        obj.enum = refs;
+      }
+      break;
     case "string":
+      break;
+    case "char":
+      obj.type = "string";
+      obj.len = 1;
       break;
     case "email":
       obj.type = "string";

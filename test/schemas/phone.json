@@ -1,0 +1,19 @@
+{
+    "messages": {
+      "integer": "Integer error message"
+    },
+    "properties": {
+      "id" : {
+        "type": "integer",
+        "required": true,
+        "primaryKey": true,
+        "autoIncrement": true
+      },
+      "number" : {
+        "type": "integer"
+      },
+      "areaCode" : {
+        "type": "integer"
+      }
+    }
+  }

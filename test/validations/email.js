@@ -20,7 +20,21 @@ describe('Validation', function(){
         done();
       });
     });
-    it('should not show error, is a valid email');
-    it('should invalid uppercase email');
+    it('should not show error, is a valid email', function(done) {
+      var customer = this.getCustomerFactory(customerData);
+      customer.isValid(function(err) {
+        expect(err).to.be(null);
+        done();
+      });
+    });
+    it('should invalid uppercase email', function(done) {
+      customerData.email = customerData.email.toUpperCase();
+      var customer = this.getCustomerFactory(customerData);
+      customer.isValid(function(err) {
+        expect(err[0].field).to.be('email');
+        expect(err[0].message).to.contain('is not a valid email!!');
+        done();
+      });
+    });
   });
 });

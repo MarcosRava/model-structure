@@ -1,5 +1,6 @@
 var expect = require('expect.js');
 var Customer = require('../models/customer.js');
+var customerSchema = require('../schemas/customer.json');
 var customerData = require('../data/customer/basic.json');
 
 describe('Validation', function(){
@@ -10,11 +11,8 @@ describe('Validation', function(){
     };
   });
 
-  describe('Validation - string', function() {
-    it('should show string error message');
-    it('should show string minimum length error message');
-    it('should show string maximum length error message');
-    it('should test string with minmum and maximum');
-    it('should not show error, is a valid string');
+  describe('Validation - nested objects', function() {
+    it('should show nested error message');
+    it('should validate fields in nested object');
   });
 });
