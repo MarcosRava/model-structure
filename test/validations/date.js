@@ -16,6 +16,7 @@ describe('Validation', function(){
       var customer = this.getCustomerFactory({birthDate: 'not@email'});
       customer.isValid(function(err) {
         expect(err[0].field).to.be('birthDate');
+        console.log(err)
         expect(err[0].message).to.contain('birthDate date ' + customer.birthDate + ' is invalid');
         done();
       });

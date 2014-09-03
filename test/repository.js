@@ -6,9 +6,6 @@ var modelRepository = require('./repositories/modelRepository.js');
 var customerRepository = require('./repositories/customerRepository.js');
 var argumentRepository = require('./repositories/argumentRepository.js');
 
-
-
-
 describe('Repository', function(){
 
   before(function () {

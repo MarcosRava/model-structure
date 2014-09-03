@@ -140,10 +140,16 @@ function destroy(callback) {
   });
 }
 
-function isValid(callback) {
-  callback = callback || function () {};
-
+function isValid(validatorsOrCallback, optCallback) {
+  var callback = typeof validatorsOrCallback === 'function' ? validatorsOrCallback : function () {};
   var validators = this.access('validators');
+
+  if (validatorsOrCallback && validatorsOrCallback.constructor === Array) {
+    callback = optCallback || function () {};
+    validators = validatorsOrCallback;
+  }
+
+  callback = callback || function () {};
 
   if (validators && validators.length > 0) {
     var length = validators.length;
