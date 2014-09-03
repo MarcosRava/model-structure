@@ -48,6 +48,10 @@ function getValidation(schema, attr) {
     case "integer":
       obj.required = false;
       break;
+    case "datetime":
+      obj.type = 'date';
+      //obj.format = 'YYYY-MM-DDTHH:mm:ss.SSSZ';
+      break;
     case "decimal":
     case "float":
       obj.type = "float";

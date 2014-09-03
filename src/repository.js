@@ -12,11 +12,8 @@ module.exports = Repository = (function () {
   return Repository;
 
 })();
+
 var datas = {};
-/**
-* Initialize
-* @param {object} args Description
-*/
 
 function create(callback) {
   this.id = new Date().getTime();

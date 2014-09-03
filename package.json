@@ -4,9 +4,9 @@
     "name": "Marcos Rava"
   },
   "name": "model-structure",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "repository": {
-    "url": "https://github.com/MarcosRava/model-structure"
+    "url": "https://github.com/MarcosRava/model-structure/"
   },
   "main": "./index.js",
   "keywords": [
