@@ -6,8 +6,8 @@ module.exports = (function() {
     this.field = field;
   }
   ValidationError.prototype = Object.create(Error.prototype);
+  ValidationError.prototype.name = 'ValidationError';
   return ValidationError;
 })();
 
 
-//ValidationError.prototype.name = 'ValidationError';

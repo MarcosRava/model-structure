@@ -10,16 +10,18 @@ describe('Validation', function(){
     this.getCustomerFactory = function getCustomerFactory(args) {
       return new Customer(args);
     };
+
+    this.error = {message:"Name field must be first letter in uppercase", field: 'name'};
   });
 
   describe('Method', function() {
-    it('should show email error message', function(done) {
+    it('should trigger validations parameter from Model instance', function(done) {
       var customer = this.getCustomerFactory({name: 'sanji'});
       var validators = [];
       var validator = new Validator({validate: firstLetterUpperCase});
+      var error = this.error;
 
       function firstLetterUpperCase(done) {
-        var error = {message:"Name field must be first letter in uppercase", field: 'name'};
         if (this.name[0].toUpperCase() === this.name[0]) {
           done();
         } else {
@@ -28,9 +30,29 @@ describe('Validation', function(){
       }
       validators.push(validator);
       customer.isValid(validators, function(err) {
-        console.log(err)
-        expect(err[0].field).to.be('name');
-        expect(err[0].message).to.contain('is not a valid email!!');
+        expect(err[0].field).to.be(error.field);
+        expect(err[0].message).to.contain(error.message);
+        done();
+      });
+    });
+
+    it('should trigger validations parameter form Validator', function(done) {
+      var customer = this.getCustomerFactory({name: 'sanji'});
+      var validators = [];
+      var validator = new Validator({validate: firstLetterUpperCase});
+      var error = this.error;
+
+      function firstLetterUpperCase(done) {
+        if (this.name[0].toUpperCase() === this.name[0]) {
+          done();
+        } else {
+          done(error);
+        }
+      }
+      validators.push(validator);
+      Validator.validate(customer, validators, function(err) {
+        expect(err[0].field).to.be(error.field);
+        expect(err[0].message).to.contain(error.message);
         done();
       });
     });

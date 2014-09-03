@@ -141,8 +141,10 @@ function destroy(callback) {
 }
 
 function isValid(validatorsOrCallback, optCallback) {
-  var callback = typeof validatorsOrCallback === 'function' ? validatorsOrCallback : function () {};
+
   var validators = this.access('validators');
+
+  var callback = typeof validatorsOrCallback === 'function' ? validatorsOrCallback : function () {};
 
   if (validatorsOrCallback && validatorsOrCallback.constructor === Array) {
     callback = optCallback || function () {};
@@ -150,30 +152,5 @@ function isValid(validatorsOrCallback, optCallback) {
   }
 
   callback = callback || function () {};
-
-  if (validators && validators.length > 0) {
-    var length = validators.length;
-    _isValid(this, 0);
-  } else {
-    callback(null);
-  }
-
-  function _isValid(data, i) {
-    var validator = validators[i];
-
-    if (!validator instanceof Validator) throw new Error("Validator not valid", validator);
-
-    if (i >= length) {
-      callback(null);
-      return;
-    }
-
-    validator.isValid(data, function (err) {
-      if (err) {
-        callback(err);
-      } else {
-        _isValid(data, i + 1);
-      }
-    });
-  }
+  Validator.validate(this, validators, callback);
 }

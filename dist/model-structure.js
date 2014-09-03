@@ -8807,8 +8807,10 @@ function destroy(callback) {
 }
 
 function isValid(validatorsOrCallback, optCallback) {
-  var callback = typeof validatorsOrCallback === 'function' ? validatorsOrCallback : function () {};
+
   var validators = this.access('validators');
+
+  var callback = typeof validatorsOrCallback === 'function' ? validatorsOrCallback : function () {};
 
   if (validatorsOrCallback && validatorsOrCallback.constructor === Array) {
     callback = optCallback || function () {};
@@ -8816,32 +8818,7 @@ function isValid(validatorsOrCallback, optCallback) {
   }
 
   callback = callback || function () {};
-
-  if (validators && validators.length > 0) {
-    var length = validators.length;
-    _isValid(this, 0);
-  } else {
-    callback(null);
-  }
-
-  function _isValid(data, i) {
-    var validator = validators[i];
-
-    if (!validator instanceof Validator) throw new Error("Validator not valid", validator);
-
-    if (i >= length) {
-      callback(null);
-      return;
-    }
-
-    validator.isValid(data, function (err) {
-      if (err) {
-        callback(err);
-      } else {
-        _isValid(data, i + 1);
-      }
-    });
-  }
+  Validator.validate(this, validators, callback);
 }
 
 },{"./helpers/db-helper.js":36,"./helpers/property-helper.js":37,"./helpers/swagger-helper.js":38,"./helpers/validator-helper.js":39,"./repository.js":41,"./validator":43,"extend":30}],41:[function(require,module,exports){
@@ -8899,11 +8876,11 @@ module.exports = (function() {
     this.field = field;
   }
   ValidationError.prototype = Object.create(Error.prototype);
+  ValidationError.prototype.name = 'ValidationError';
   return ValidationError;
 })();
 
 
-//ValidationError.prototype.name = 'ValidationError';
 
 },{}],43:[function(require,module,exports){
 var Validator;
@@ -8916,8 +8893,9 @@ module.exports = Validator = (function () {
   function Validator(args) {
     args = args || {};
     this.validate = args.validate;
-    Validator.prototype.isValid = isValid;
   }
+  Validator.validate = validate;
+  Validator.prototype.isValid = isValid;
 
   return Validator;
 
@@ -8926,14 +8904,14 @@ module.exports = Validator = (function () {
 function isValid(model, callback) {
   if (typeof this.validate === 'function') {
     if (this.validate.length === 1)
-      this.validate.call(model, function (err) {
+      this.validate.call(model, function (err, fields) {
         err = checkError(err);
-        callback(err);
+        callback(err, fields);
       });
     else {
       var err = this.validate.call(model);
       err = checkError(err);
-      callback(err);
+      callback(err, fields);
     }
   }
   else {
@@ -8943,8 +8921,37 @@ function isValid(model, callback) {
 }
 
 function checkError(err) {
-  if (!err || !err.message || !err.field) throw new Error("Missing ValidationError properties");
+  if (!err || !err.message || !err.field) throw new Error("Inválid constructor");
   return [new ValidationError(err.message, err.field)];
+}
+
+function validate(model, validators, callback) {
+
+  if (validators && validators.length > 0) {
+    var length = validators.length;
+    _isValid(model, 0);
+  } else {
+    callback(null);
+  }
+
+  function _isValid(data, i) {
+    var validator = validators[i];
+
+    if (!validator instanceof Validator) throw new Error("Validator not valid", validator);
+
+    if (i >= length) {
+      callback(null);
+      return;
+    }
+
+    validator.isValid(data, function (err, fields) {
+      if (err) {
+        callback(err, fields);
+      } else {
+        _isValid(data, i + 1);
+      }
+    });
+  }
 }
 
 },{"./validation-error.js":42,"async-validate":2}]},{},[1])
