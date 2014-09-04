@@ -3,7 +3,7 @@ var Customer = require('../models/customer.js');
 var customerSchema = require('../schemas/customer.json');
 var customerData = require('../data/customer/basic.json');
 
-describe('Validation', function(){
+describe('Validation', function () {
 
   before(function () {
     this.getCustomerFactory = function getCustomerFactory(args) {
@@ -11,18 +11,18 @@ describe('Validation', function(){
     };
   });
 
-  describe('Validation - enumerable', function() {
-    it('should show enumerable error message', function(done) {
+  describe('enumerable', function () {
+    it('should return enumerable error message', function (done) {
       var customer = this.getCustomerFactory({gender: 'R'});
-      customer.isValid(function(err) {
+      customer.isValid(function (err) {
         expect(err[0].field).to.be('gender');
         expect(err[0].message).to.contain('gender must be one of M, F');
         done();
       });
     });
-    it('should show enumerable error message', function(done) {
+    it('should return enumerable error message', function (done) {
       var customer = this.getCustomerFactory({statusId: 4});
-      customer.isValid(function(err) {
+      customer.isValid(function (err) {
         expect(err[0].field).to.be('statusId');
         expect(err[0].message).to.contain('statusId must be one of 0, 1');
         done();

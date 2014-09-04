@@ -3,7 +3,7 @@ var Customer = require('../models/customer.js');
 var customerSchema = require('../schemas/customer.json');
 var customerData = require('../data/customer/basic.json');
 
-describe('Validation', function(){
+describe('Validation', function () {
 
   before(function () {
     this.getCustomerFactory = function getCustomerFactory(args) {
@@ -11,10 +11,10 @@ describe('Validation', function(){
     };
   });
 
-  describe('Validation - integer', function() {
-    it('should show integer error message', function(done) {
+  describe('integer', function () {
+    it('should show integer error message', function (done) {
       var customer = this.getCustomerFactory({age: 'not Age'});
-      customer.isValid(function(err) {
+      customer.isValid(function (err) {
         expect(err[0].field).to.be('age');
         expect(err[0].message).to.contain('Integer error message');
         done();

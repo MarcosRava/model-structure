@@ -3,7 +3,7 @@ var Customer = require('../models/customer.js');
 var customerSchema = require('../schemas/customer.json');
 var customerData = require('../data/customer/basic.json');
 
-describe('Validation', function(){
+describe('Validation', function () {
 
   before(function () {
     this.getCustomerFactory = function getCustomerFactory(args) {
@@ -11,7 +11,7 @@ describe('Validation', function(){
     };
   });
 
-  describe('Validation - nested objects', function() {
+  describe('nested objects', function () {
     it('should show nested error message');
     it('should validate fields in nested object');
   });

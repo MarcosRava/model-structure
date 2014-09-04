@@ -2,7 +2,7 @@ var expect = require('expect.js');
 var Customer = require('../models/customer.js');
 var customerData = require('../data/customer/basic.json');
 
-describe('Validation', function(){
+describe('Validation', function () {
 
   before(function () {
     this.getCustomerFactory = function getCustomerFactory(args) {
@@ -10,7 +10,7 @@ describe('Validation', function(){
     };
   });
 
-  describe('Validation - string', function() {
+  describe('string', function () {
     it('should show string error message');
     it('should show string minimum length error message');
     it('should show string maximum length error message');

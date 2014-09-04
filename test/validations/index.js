@@ -4,18 +4,18 @@ var Model = model.Model;
 var Validator = model.Validator;
 var Customer = require('../models/customer.js');
 
-describe('Validation', function(){
+describe('Validation', function () {
 
   before(function () {
     this.getCustomerFactory = function getCustomerFactory(args) {
       return new Customer(args);
     };
 
-    this.error = {message:"Name field must be first letter in uppercase", field: 'name'};
+    this.error = {message: "Name field must be first letter in uppercase", field: 'name'};
   });
 
-  describe('Method', function() {
-    it('should trigger validations parameter from Model instance', function(done) {
+  describe('Method', function () {
+    it('should trigger validations parameter from Model instance', function (done) {
       var customer = this.getCustomerFactory({name: 'sanji'});
       var validators = [];
       var validator = new Validator({validate: firstLetterUpperCase});
@@ -29,14 +29,14 @@ describe('Validation', function(){
         }
       }
       validators.push(validator);
-      customer.isValid(validators, function(err) {
+      customer.isValid(validators, function (err) {
         expect(err[0].field).to.be(error.field);
         expect(err[0].message).to.contain(error.message);
         done();
       });
     });
 
-    it('should trigger validations parameter form Validator', function(done) {
+    it('should trigger validations parameter form Validator', function (done) {
       var customer = this.getCustomerFactory({name: 'sanji'});
       var validators = [];
       var validator = new Validator({validate: firstLetterUpperCase});
@@ -50,7 +50,7 @@ describe('Validation', function(){
         }
       }
       validators.push(validator);
-      Validator.validate(customer, validators, function(err) {
+      Validator.validate(customer, validators, function (err) {
         expect(err[0].field).to.be(error.field);
         expect(err[0].message).to.contain(error.message);
         done();
