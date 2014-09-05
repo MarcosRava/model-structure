@@ -70,7 +70,7 @@ describe('Validation', function () {
       });
 
     });
-    describe('when string is invalid', function () {
+    describe('when string is valid', function () {
       it('should not return error when string is valid', function (done) {
         var customer = this.getCustomerFactory({name: 'Valid string'});
         customer.isValid(function (err) {

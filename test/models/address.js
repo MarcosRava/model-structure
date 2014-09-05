@@ -24,10 +24,7 @@ var schema = {
       "type": "integer"
     },
     "zipCode" : {
-      "type": "integer"
-    },
-    "birthDate" : {
-      "type": "date"
+      "type": "string"
     }
   }
 };
