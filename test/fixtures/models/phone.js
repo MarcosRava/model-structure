@@ -25,9 +25,9 @@ var schema = {
 
 module.exports = Phone = (function (_super) {
   function Phone(args) {
-    _super._init_(this, args);
+    _super.instantiate(this, args);
   }
-  Phone.schema = schema;
+  _super.init(Phone, schema);
   return Phone;
 })(Model);
 

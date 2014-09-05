@@ -31,8 +31,8 @@ var schema = {
 
 module.exports = Address = (function (_super) {
   function Address(args) {
-    _super._init_(this, args);
+    _super.instantiate(this, args);
   }
-  Address.schema = schema;
+  _super.init(Address, schema);
   return Address;
 })(Model);

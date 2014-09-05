@@ -1,6 +1,6 @@
 var model = require('../../../index.js');
 var Model = model.Model;
-var Phone = require('./address.js');
+var Phone = require('./phone.js');
 var Address = require('./address.js');
 
 var Customer;
@@ -61,7 +61,7 @@ var schema = {
 
 module.exports = Customer = (function (_super) {
   function Customer(args) {
-    _super._init_(this, args);
+    _super.instantiate(this, args);
   }
 
   Customer.STATUS = {
@@ -72,6 +72,8 @@ module.exports = Customer = (function (_super) {
   schema.properties.phones = { "type": "array", "model": { "ref": Phone } };
   schema.properties.address = { "type": "object", "model": { "ref": Address } };
   schema.properties.statusId = { "type": "enum", "values": {"ref": Customer.STATUS, "type": "integer"} };
-  Customer.schema = schema;
+
+  _super.init(Customer, schema);
+
   return Customer;
 })(Model);

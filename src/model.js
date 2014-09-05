@@ -23,7 +23,8 @@ module.exports = Model = (function () {
     return publicHelpers[schemaName](modelSchema);
   }
 
-  Model._init_    = _init_;
+  Model.init = init;
+  Model.instantiate = instantiate;
   Model.getSchema = getSchema;
 
   Model.prototype.create     = create;
@@ -38,9 +39,25 @@ module.exports = Model = (function () {
 
 })();
 
-function _init_(_this, args) {
-  extend(true, _this.constructor.prototype, Model.prototype);
-  _this.constructor.prototype._super = Model;
+function init(ref, schema) {
+  ref.schema = schema;
+  schema.name = ref.name;
+  schema.ref = ref;
+  ref.access =  function access(key) {
+    if (key === 'privates') return schema;
+    var func = accessFunctions[key];
+    if (func)
+      return func.call(this, schema);
+    return schema[key];
+  };
+
+
+  extend(true, ref.prototype, Model.prototype);
+  ref.prototype._super = Model;
+
+}
+
+function instantiate(_this, args) {
   initialize.call(_this, args);
 }
 
@@ -61,15 +78,14 @@ function initialize(args, schema) {
       return func.call(this, schema);
     return schema[key];
   }
-
   schema = schema || extend(true, {}, ref.schema);
   for (var attr in schema.properties) {
     propertyHelper.defineGetSet.call(this, schema, attr);
     schemaValidation[attr] = validationHelper.getValidation.call(this, schema, attr);
     this[attr] = data[attr];
   }
-  schema.schema = schemaValidation;
-  schema.validators = [ new Validator({validate : schema.schema}) ];
+  schema.schemaValidation = schemaValidation;
+  schema.validators = [ new Validator({validate : schema.schemaValidation}) ];
   if (schema.validatorSchema)
     schema.validators = schema.validators.concat(new Validator({validate: schema.validatorSchema}));
 
@@ -78,8 +94,6 @@ function initialize(args, schema) {
   this.constructor.prototype.access = access;
   var DefaultRepository = ref.repository || Model.repository || Repository;
   schema.repository = data.repository || schema.repository ||new DefaultRepository();
-  schema.ref = ref;
-  schema.name = ref.name;
 }
 
 function create(callback) {
