@@ -140,17 +140,28 @@ function destroy(callback) {
   });
 }
 
-function isValid(validatorsOrCallback, optCallback) {
+function isValid(optionalValidators, callback) {
 
-  var validators = this.access('validators');
-
-  var callback = typeof validatorsOrCallback === 'function' ? validatorsOrCallback : function () {};
-
-  if (validatorsOrCallback && validatorsOrCallback.constructor === Array) {
-    callback = optCallback || function () {};
-    validators = validatorsOrCallback;
+  // retrieve arguments as array
+  var args = [];
+  for (var i = 0; i < arguments.length; i++) {
+    args.push(arguments[i]);
   }
 
-  callback = callback || function () {};
+  // last argument is the callback function.
+  callback = args.pop();
+
+  if (typeof callback !== 'function') {
+    throw new Error("Must pass a callback function");
+  }
+
+  // retrieve default validators
+  var validators = this.access('validators');
+
+  // use optionalValidators as validators when optionalValidators are passed
+  if (args.length > 0) {
+    validators = args[0];
+  }
+
   Validator.validate(this, validators, callback);
 }

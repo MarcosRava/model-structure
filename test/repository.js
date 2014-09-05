@@ -1,10 +1,10 @@
 var expect = require('expect.js');
 var model = require('../index.js');
 var Model = model.Model;
-var Customer = require('./models/customer.js');
-var modelRepository = require('./repositories/modelRepository.js');
-var customerRepository = require('./repositories/customerRepository.js');
-var argumentRepository = require('./repositories/argumentRepository.js');
+var Customer = require('./fixtures/models/customer.js');
+var modelRepository = require('./fixtures/repositories/modelRepository.js');
+var customerRepository = require('./fixtures/repositories/customerRepository.js');
+var argumentRepository = require('./fixtures/repositories/argumentRepository.js');
 
 describe('Repository', function(){
 

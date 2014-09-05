@@ -1,7 +1,7 @@
 var expect = require('expect.js');
-var Customer = require('../models/customer.js');
+var Customer = require('../fixtures/models/customer.js');
 var customerSchema = Customer.schema;
-var customerData = require('../data/customer/basic.json');
+var customerData = require('../fixtures/data/customer/basic.json');
 
 describe('Validation', function () {
 
@@ -45,7 +45,6 @@ describe('Validation', function () {
       it('should not return error when float is an integer', function (done) {
         var customer = this.getCustomerFactory({income: 10});
         customer.isValid(function (err) {
-          console.log(err);
           expect(err).to.be(null);
           done();
         });

@@ -1,7 +1,7 @@
 var expect = require('expect.js');
-var Customer = require('./models/customer.js');
+var Customer = require('./fixtures/models/customer.js');
 var customerSchema = Customer.schema;
-var customerData = require('./data/customer/basic.json');
+var customerData = require('./fixtures/data/customer/basic.json');
 
 describe('Properties', function(){
 

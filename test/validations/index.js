@@ -2,7 +2,7 @@ var expect = require('expect.js');
 var model = require('../../index.js');
 var Model = model.Model;
 var Validator = model.Validator;
-var Customer = require('../models/customer.js');
+var Customer = require('../fixtures/models/customer.js');
 
 describe('Validation', function () {
 

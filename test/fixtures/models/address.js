@@ -1,7 +1,6 @@
-var model = require('../../index.js');
+var model = require('../../../index.js');
 var Model = model.Model;
-
-var Phone;
+var Address;
 
 var schema = {
   "messages": {
@@ -14,20 +13,26 @@ var schema = {
       "primaryKey": true,
       "autoIncrement": true
     },
+    "addressName" : {
+      "type": "string",
+      "length": {
+        "minimum": 3,
+        "maximum": 30
+      }
+    },
     "number" : {
       "type": "integer"
     },
-    "areaCode" : {
-      "type": "integer"
+    "zipCode" : {
+      "type": "string"
     }
   }
 };
 
-module.exports = Phone = (function (_super) {
-  function Phone(args) {
+module.exports = Address = (function (_super) {
+  function Address(args) {
     _super._init_(this, args);
   }
-  Phone.schema = schema;
-  return Phone;
+  Address.schema = schema;
+  return Address;
 })(Model);
-

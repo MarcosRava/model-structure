@@ -1,7 +1,7 @@
 var expect = require('expect.js');
-var Customer = require('../models/customer.js');
-var customerData = require('../data/customer/basic.json');
-var Message = require('../helpers/message.js');
+var Customer = require('../fixtures/models/customer.js');
+var customerData = require('../fixtures/data/customer/basic.json');
+var Message = require('../test-helpers/message.js');
 
 describe('Validation', function () {
 
