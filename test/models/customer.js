@@ -2,9 +2,61 @@ var model = require('../../index.js');
 var Model = model.Model;
 var Phone = require('./address.js');
 var Address = require('./address.js');
-var schema = require('../schemas/customer.json');
 
 var Customer;
+
+var schema = {
+  "messages": {
+    "integer": "Integer error message"
+  },
+  "properties": {
+    "id" : {
+      "type": "integer",
+      "required": true,
+      "primaryKey": true,
+      "autoIncrement": true
+    },
+    "name" : {
+      "type": "string",
+      "length": {
+        "minimum": 3,
+        "maximum": 30
+      }
+    },
+    "email" : {
+      "type": "email",
+      "message": "is not a valid email!!",
+      "length": {
+        "minimum": 7,
+        "tooShort": "Short email (custom attribute message)"
+      }
+    },
+    "age" : {
+      "type": "integer"
+    },
+    "hands" : {
+      "type": "integer"
+    },
+    "birthDate" : {
+      "type": "date"
+    },
+    "createdAt" : {
+      "type": "datetime"
+    },
+    "tags" : {
+      "type": "array",
+      "model" : {
+        "type": "string"
+      }
+    },
+    "gender": {
+      "type": "enum",
+      "values" : {
+        "ref": ["M", "F"]
+      }
+    }
+  }
+};
 
 module.exports = Customer = (function (_super) {
   function Customer(args) {

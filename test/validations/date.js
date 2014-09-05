@@ -1,6 +1,5 @@
 var expect = require('expect.js');
 var Customer = require('../models/customer.js');
-var customerSchema = require('../schemas/customer.json');
 var customerData = require('../data/customer/basic.json');
 var Message = require('../helpers/message.js');
 

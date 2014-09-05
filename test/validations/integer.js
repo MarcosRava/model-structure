@@ -1,6 +1,6 @@
 var expect = require('expect.js');
 var Customer = require('../models/customer.js');
-var customerSchema = require('../schemas/customer.json');
+var customerSchema = Customer.schema;
 var customerData = require('../data/customer/basic.json');
 
 describe('Validation', function () {

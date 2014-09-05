@@ -26,7 +26,7 @@ function isValid(model, callback) {
     else {
       var err = this.validate.call(model);
       err = checkError(err);
-      callback(err, fields);
+      callback(err);
     }
   }
   else {
