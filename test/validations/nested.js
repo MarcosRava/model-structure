@@ -12,7 +12,11 @@ describe('Validation', function () {
   });
 
   describe('nested objects', function () {
-    it('should show nested error message');
-    it('should validate fields in nested object');
+    describe('when nested object is invalid', function () {
+      it('should show nested error message');
+    });
+    describe('when nested object is valid', function () {
+      it('should validate fields in nested object');
+    });
   });
 });

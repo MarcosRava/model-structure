@@ -36,7 +36,7 @@ function isValid(model, callback) {
 }
 
 function checkError(err) {
-  if (!err || !err.message || !err.field) throw new Error("Inválid constructor");
+  if (!err || !err.message || !err.field) throw new Error("Invalid constructor");
   return [new ValidationError(err.message, err.field)];
 }
 

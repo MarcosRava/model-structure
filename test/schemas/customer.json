@@ -12,6 +12,7 @@
       "name" : {
         "type": "string",
         "length": {
+          "minimum": 3,
           "maximum": 30
         }
       },

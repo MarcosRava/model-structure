@@ -1,17 +1,15 @@
 var expect = require('expect.js');
 var Customer = require('../models/customer.js');
 var customerSchema = require('../schemas/customer.json');
-var customerData = require('../data/customer/basic.json');
 
 describe('Validation', function () {
 
-  var errorExpectedMessage = 'is not a valid email!!';
+  var errorExpectedMessage = customerSchema.properties.email.message;
 
   before(function () {
     this.getCustomerFactory = function getCustomerFactory(args) {
       return new Customer(args);
     };
-    this.customerData = JSON.parse(JSON.stringify(customerData));
   });
 
   describe('email', function () {
@@ -26,8 +24,7 @@ describe('Validation', function () {
       });
 
       it('should return error when email is in uppercase', function (done) {
-        customerData.email = this.customerData.email.toUpperCase();
-        var customer = this.getCustomerFactory(customerData);
+        var customer = this.getCustomerFactory({email: 'test@rico.com.vc'.toUpperCase()});
         customer.isValid(function (err) {
           expect(err[0].field).to.be('email');
           expect(err[0].message).to.contain(errorExpectedMessage);
@@ -38,7 +35,7 @@ describe('Validation', function () {
 
     describe('when email is valid', function () {
       it('should not return error', function (done) {
-        var customer = this.getCustomerFactory(this.customerData);
+        var customer = this.getCustomerFactory({email: 'test@rico.com.vc'});
         customer.isValid(function (err) {
           expect(err).to.be(null);
           done();
