@@ -30,6 +30,7 @@ describe('Validation', function () {
         var address = {addressName: 'Street X', number: 'X100', zipCode: '010400'};
         var customer = this.getCustomerFactory({address: address});
         customer.isValid(function (err) {
+          expect(err).to.not.be(null);
           expect(err[0].field).to.be('address');
           done();
         });

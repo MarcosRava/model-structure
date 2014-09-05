@@ -54,7 +54,7 @@ function getValidation(schema, attr) {
       break;
     case "decimal":
     case "float":
-      obj.type = "float";
+      obj.type = "number";
       break;
     case "array":
       if (prop.model)

@@ -7,7 +7,8 @@ var Customer;
 
 var schema = {
   "messages": {
-    "integer": "Integer error message"
+    "integer": "Integer error message",
+    "float": "Float error message",
   },
   "properties": {
     "id" : {
@@ -37,6 +38,9 @@ var schema = {
     "hands" : {
       "type": "integer"
     },
+    "income" : {
+      "type": "float"
+    },
     "birthDate" : {
       "type": "date"
     },
@@ -44,10 +48,7 @@ var schema = {
       "type": "datetime"
     },
     "tags" : {
-      "type": "array",
-      "model" : {
-        "type": "string"
-      }
+      "type": "array"
     },
     "gender": {
       "type": "enum",
