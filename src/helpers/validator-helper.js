@@ -56,9 +56,14 @@ function getValidation(schema, attr) {
     case "float":
       obj.type = "number";
       break;
+    case "object":
+      obj.type = "nested";
+      break;
     case "array":
-      if (prop.model)
-        obj.modelList = true;
+      if (prop.model) {
+        obj.modelList =true;
+        obj.type = "arrayModel";
+      }
       break;
     default:
       break;

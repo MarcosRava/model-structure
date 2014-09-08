@@ -1,7 +1,11 @@
 var Validator;
 var ValidationError = require('./validation-error.js');
 var schema = require('async-validate');
+//var ValidationError = schema.error;
 var validateOptions = {first : true, single: true};
+var util = require ('util');
+var async = require('async');
+
 
 module.exports = Validator = (function () {
 
@@ -68,3 +72,40 @@ function validate(model, validators, callback) {
     });
   }
 }
+
+function arrayModel(rule, value, callback, source, options) {
+  var funcs = [];
+
+  for(var i in value) {
+    funcs.push(value[i].isValid.bind(value[i]));
+  }
+
+  async.series(funcs, function (errors, iterator) {
+    var position = funcs.length - (funcs.length - iterator.length) - 1;
+    for (var err in errors) {
+      errors[err].field = rule.field +  "[" + position + "]." + errors[err].field;
+    }
+    callback(errors);
+  });
+}
+
+function nested(rule, value, callback, source, options) {
+  if (!value) {
+    return callback();
+  }
+
+  if (!(value instanceof source.super_)) {
+    return callback([ new ValidationError(
+      util.format(schema.messages.types.object, rule.field, 'object'),
+      rule.field)]);
+  }
+  value.isValid(function (errors) {
+    for (var err in errors) {
+      errors[err].field = rule.field +  "." + errors[err].field;
+    }
+    callback(errors);
+  });
+}
+
+schema.register('arrayModel', arrayModel);
+schema.register('nested', nested);

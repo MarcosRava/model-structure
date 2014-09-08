@@ -17,9 +17,11 @@
   ],
   "description": "Models based on schema",
   "dependencies": {
+    "async": "^0.9.0",
+    "async-validation": "git+https://github.com/FabricioFFC/async-validate",
     "extend": "^1.2.1",
     "moment": "^2.6.0",
-    "async-validation" : "git+https://github.com/FabricioFFC/async-validate"
+    "q": "^1.0.1"
   },
   "scripts": {
     "test": "mocha"

@@ -41,17 +41,17 @@ describe('Validation', function () {
         var customer = this.getCustomerFactory({address: address});
         customer.isValid(function (err) {
           expect(err).to.not.be(null);
-          expect(err[0].field).to.be('address');
+          expect(err[0].field).to.be('address.number');
           done();
         });
       });
       it('should validate fields in nested objects in array', function (done) {
-        var phone1 = {number: 'X100', areaCode: '010400'};
+        var phone1 = {number: 'X100', areaCode: 11};
         var phone2 = {number: 995952478, areaCode: 11};
-        var customer = this.getCustomerFactory({phones:[phone1, phone2]});
+        var customer = this.getCustomerFactory({phones:[phone2, phone1]});
         customer.isValid(function (err) {
           expect(err).to.not.be(null);
-          expect(err[0].field).to.be('phones');
+          expect(err[0].field).to.be('phones[1].number');
           done();
         });
       });

@@ -10,6 +10,9 @@ function defineGetSet(schema, attr) {
         defineList.call(this, prop.model.ref, attr);
       }
       break;
+    case "object":
+      defineNested.call(this, prop.model.ref, attr);
+      break;
     case "date":
       defineDate.call(this, prop, attr);
       break;
@@ -113,6 +116,26 @@ function defineList(ListModel, attr) {
       value = [];
       for (var i in val) {
         value.push(new ListModel(val[i], this));
+      }
+    },
+    enumerable: true
+  };
+  if (this.__lookupGetter__(attr)) delete getSet.get;
+  if (this.__lookupSetter__(attr)) delete getSet.set;
+  Object.defineProperty(this, attr, getSet);
+}
+
+function defineNested(ListModel, attr) {
+  var value = [];
+  var getSet = {
+    get: function () {
+      return value;
+    },
+    set: function (val) {
+      if (typeof val === 'object') {
+        value = new ListModel(val, this);
+      } else {
+        value = val;
       }
     },
     enumerable: true

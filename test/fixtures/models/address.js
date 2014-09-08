@@ -9,7 +9,6 @@ var schema = {
   "properties": {
     "id" : {
       "type": "integer",
-      "required": true,
       "primaryKey": true,
       "autoIncrement": true
     },

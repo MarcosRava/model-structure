@@ -5,6 +5,7 @@ var validationHelper = require('./helpers/validator-helper.js');
 var propertyHelper   = require('./helpers/property-helper.js');
 var dbHelper         = require('./helpers/db-helper.js');
 var extend           = require('extend');
+var util           = require('util');
 var Model;
 
 var publicHelpers = {
@@ -52,8 +53,13 @@ function init(ref, schema) {
   };
 
 
-  extend(true, ref.prototype, Model.prototype);
-  ref.prototype._super = Model;
+  //extend(true, ref.prototype, Model.prototype);
+  ref.prototype = Object.create(Model.prototype, {
+    constructor: {
+      value: ref,
+    }
+  });
+  ref.prototype.super_ = Model;
 
 }
 
