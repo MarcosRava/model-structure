@@ -27,8 +27,7 @@
     "async": "^0.9.0",
     "async-validation": "git+https://github.com/FabricioFFC/async-validate",
     "extend": "^1.2.1",
-    "moment": "^2.6.0",
-    "q": "^1.0.1"
+    "moment": "^2.6.0"
   },
   "scripts": {
     "test": "mocha",
@@ -54,6 +53,7 @@
     "gulp-livereload": "^2.0.0",
     "gulp-uglify": "^0.3.0",
     "mocha": "^1.20.0",
-    "tiny-lr": "0.0.7"
+    "tiny-lr": "0.0.7",
+    "underscore": "^1.7.0"
   }
 }

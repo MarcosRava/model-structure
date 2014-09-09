@@ -14,6 +14,10 @@ function getSwaggerProperties(schema, attr, model) {
         model[prop.model.ref.name] = getSwagger(prop.model.ref.schema)[prop.model.ref.name];
       }
       break;
+    case "object":
+      swagger = {$ref: prop.model.ref.name};
+      model[prop.model.ref.name] = getSwagger(prop.model.ref.schema)[prop.model.ref.name];
+      break;
     case "decimal":
     case "float":
       swagger.type = 'number';
