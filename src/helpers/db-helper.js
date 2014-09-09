@@ -5,6 +5,7 @@ function getSchema(schema) {
     "integer" : "int",
     "email" : "string",
     "float" : "decimal",
+    "datetime": "timestamp"
   };
   for (var i in schema.properties) {
     var prop = schema.properties[i];
@@ -25,6 +26,5 @@ function getSchema(schema) {
     if (prop.required && !prop.primaryKey)
       dbSchema[i].notNull = prop.required;
   }
-  dbSchema.createdAt = dbSchema.updatedAt = 'datetime';
   return dbSchema;
 }

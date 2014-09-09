@@ -26,7 +26,9 @@ var schema = {
     },
     "email" : {
       "type": "email",
+      "required": true,
       "message": "is not a valid email!!",
+      "unique": true,
       "length": {
         "minimum": 7,
         "tooShort": "Short email (custom attribute message)"
@@ -50,10 +52,21 @@ var schema = {
     "tags" : {
       "type": "array"
     },
+    "statusId" : {
+      "type": "enum",
+      "values" : {
+        "ref": [0, 1],
+        "type": "integer"
+      }
+    },
+    "active" : {
+      "type": "boolean"
+    },
     "gender": {
       "type": "enum",
       "values" : {
-        "ref": ["M", "F"]
+        "ref": ["M", "F"],
+        "type": "char"
       }
     }
   }
