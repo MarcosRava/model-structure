@@ -1,24 +1,51 @@
 var Validator;
 var ValidationError = require('./validation-error.js');
 var schema = require('async-validate');
-//var ValidationError = schema.error;
 var validateOptions = {first : true, single: true};
 var util = require ('util');
 var async = require('async');
 
+var _messages = {
+  'en': schema.messages.clone()
+};
+var _locale = 'en';
 
 module.exports = Validator = (function () {
+
+
+
 
   function Validator(args) {
     args = args || {};
     this.validate = args.validate;
   }
+
   Validator.validate = validate;
   Validator.prototype.isValid = isValid;
+  Validator.getMessages = getMessages;
+  Validator.addMessages = addMessages;
+  Validator.setLocale = setLocale;
 
   return Validator;
 
 })();
+
+function setLocale(locale) {
+  _locale = locale;
+}
+
+function getLocale() {
+  return _locale;
+}
+
+function getMessages(locale) {
+  var cloned = JSON.parse(JSON.stringify(_messages[locale || getLocale()]));
+  return cloned;
+}
+
+function addMessages(locale, messages) {
+  _messages[locale] = messages;
+}
 
 function isValid(model, callback) {
   if (typeof this.validate === 'function') {
@@ -35,6 +62,7 @@ function isValid(model, callback) {
   }
   else {
     var validator = new schema(this.validate);
+    validateOptions.messages = getMessages();
     validator.validate(model, validateOptions, callback);
   }
 }

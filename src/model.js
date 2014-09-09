@@ -26,6 +26,9 @@ module.exports = Model = (function () {
 
   Model.init = init;
   Model.instantiate = instantiate;
+  Model.addMessages = addMessages;
+  Model.getMessages = getMessages;
+  Model.setLocale = setLocale;
   Model.getSchema = getSchema;
 
   Model.prototype.create     = create;
@@ -52,8 +55,6 @@ function init(ref, schema) {
     return schema[key];
   };
 
-
-  //extend(true, ref.prototype, Model.prototype);
   ref.prototype = Object.create(Model.prototype, {
     constructor: {
       value: ref,
@@ -184,4 +185,18 @@ function isValid(optionalValidators, callback) {
   }
 
   Validator.validate(this, validators, callback);
+}
+
+function setLocale(locale) {
+  this.locale = locale;
+  Validator.setLocale(this.locale);
+}
+
+function addMessages(locale, messages) {
+  messages = extend(true, Validator.getMessages(), messages);
+  Validator.addMessages(locale, messages);
+}
+
+function getMessages(locale) {
+  return Validator.getMessages(locale);
 }
