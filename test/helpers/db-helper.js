@@ -7,8 +7,6 @@ describe('DB Helper', function () {
 
   before(function () {
     this.nodeDbMigrateSchema = Model.getSchema('dbMigrate', Customer.schema);
-    console.log(new Array(100).join('.'));
-    console.log(this.nodeDbMigrateSchema);
   });
 
   describe('attribute is primary key', function () {
