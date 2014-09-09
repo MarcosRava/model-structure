@@ -3,12 +3,19 @@
     "email": "marcosrava@gmail.com",
     "name": "Marcos Rava"
   },
+  "contributors": [{
+    "name": "Fabrício Ferrari de Campos",
+    "email": "ffc.fabricio@gmail.com"
+  }],
   "name": "model-structure",
   "version": "0.2.0",
   "repository": {
     "url": "https://github.com/MarcosRava/model-structure/"
   },
   "main": "./index.js",
+  "bugs": {
+    "url": "https://github.com/MarcosRava/model-structure/issues"
+  },
   "keywords": [
     "swagger",
     "models",
@@ -25,12 +32,20 @@
   },
   "scripts": {
     "test": "mocha",
-    "build": "gulp build"
+    "build": "gulp build",
+    "cover": "./node_modules/mocha/bin/mocha -R html-cov --require blanket > coverage.html"
   },
   "engines": {
     "node": "*"
   },
+  "config": {
+    "blanket": {
+      "data-cover-never": "node_modules",
+      "pattern": "src"
+    }
+  },
   "devDependencies": {
+    "blanket": "^1.1.6",
     "expect.js": "^0.3.1",
     "gulp": "^3.7.0",
     "gulp-browserify": "^0.5.0",
