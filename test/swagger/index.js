@@ -10,7 +10,7 @@ var swaggerCustomer = {
   "Customer": {
     "id": "Customer",
     "required": [
-      "id"
+      "id", "email"
     ],
     "properties": {
       "id": {
@@ -73,7 +73,8 @@ var swaggerCustomer = {
           "LEAD: 0",
           "CUSTOMER: 1"
         ]
-      }
+      },
+      "active": { "type": 'boolean' }
     }
   },
   "Phone": {
