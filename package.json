@@ -3,10 +3,12 @@
     "email": "marcosrava@gmail.com",
     "name": "Marcos Rava"
   },
-  "contributors": [{
-    "name": "Fabrício Ferrari de Campos",
-    "email": "ffc.fabricio@gmail.com"
-  }],
+  "contributors": [
+    {
+      "name": "Fabrício Ferrari de Campos",
+      "email": "ffc.fabricio@gmail.com"
+    }
+  ],
   "name": "model-structure",
   "version": "0.2.0",
   "repository": {
@@ -26,6 +28,7 @@
   "dependencies": {
     "async": "^0.9.0",
     "async-validation": "git+https://github.com/FabricioFFC/async-validate",
+    "db-migrate": "^0.7.1",
     "extend": "^1.2.1",
     "moment": "^2.6.0"
   },

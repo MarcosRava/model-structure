@@ -9,7 +9,7 @@ function getSchema(schema) {
   };
   for (var i in schema.properties) {
     var prop = schema.properties[i];
-    if (prop.type === 'array' || i.indexOf('_') === 0) continue;
+    if (propertyInNotConvertedProperties(prop)) continue;
     dbSchema[i] = {
       type: types[prop.type.trim()] || prop.type,
     };
@@ -27,4 +27,8 @@ function getSchema(schema) {
       dbSchema[i].notNull = prop.required;
   }
   return dbSchema;
+
+  function propertyInNotConvertedProperties (prop) {
+    return prop.type === 'array' || i.indexOf('_') === 0 || prop.type === 'object';
+  }
 }

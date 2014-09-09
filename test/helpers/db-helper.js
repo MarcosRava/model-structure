@@ -7,6 +7,8 @@ describe('DB Helper', function () {
 
   before(function () {
     this.nodeDbMigrateSchema = Model.getSchema('dbMigrate', Customer.schema);
+    console.log(new Array(100).join('.'));
+    console.log(this.nodeDbMigrateSchema);
   });
 
   describe('attribute is primary key', function () {
@@ -145,6 +147,22 @@ describe('DB Helper', function () {
     it('should return type equals boolean', function (done) {
       var type = this.nodeDbMigrateSchema.active.type;
       expect(type).to.be('boolean');
+      done();
+    });
+  });
+
+  describe('attribute is object', function () {
+    it('should return not return the attribute in schema', function (done) {
+      var attribute = this.nodeDbMigrateSchema.address;
+      expect(attribute).to.be(undefined);
+      done();
+    });
+  });
+
+  describe('attribute is array', function () {
+    it('should return not return the attribute in schema', function (done) {
+      var attribute = this.nodeDbMigrateSchema.tags;
+      expect(attribute).to.be(undefined);
       done();
     });
   });
