@@ -28,7 +28,7 @@
     typeof require !== 'undefined' ? require : null
 );
 
-},{"./src/model":40,"./src/validation-error.js":42,"./src/validator":43}],2:[function(require,module,exports){
+},{"./src/model":41,"./src/validation-error.js":43,"./src/validator":44}],2:[function(require,module,exports){
 module.exports = require('./lib/index');
 
 },{"./lib/index":4}],3:[function(require,module,exports){
@@ -46,7 +46,7 @@ util.inherits(ValidationError, Error);
 
 ValidationError.prototype.name = 'ValidationError';
 
-},{"util":34}],4:[function(require,module,exports){
+},{"util":35}],4:[function(require,module,exports){
 var util = require('util');
 var async = require('async');
 var validators = require('./validator');
@@ -298,7 +298,7 @@ module.exports.rules.std = {
   hex: {type: "string", required: true, pattern: pattern.hex}
 }
 
-},{"./error":3,"./messages":5,"./rule":9,"./validator":20,"async":28,"util":34}],5:[function(require,module,exports){
+},{"./error":3,"./messages":5,"./rule":9,"./validator":20,"async":28,"util":35}],5:[function(require,module,exports){
 /**
  *  Default validation error messages.
  */
@@ -395,7 +395,7 @@ var date = function(rule, value, source, errors, options) {
 
 module.exports = date;
 
-},{"./error":8,"moment":29,"util":34}],7:[function(require,module,exports){
+},{"./error":8,"moment":29,"util":35}],7:[function(require,module,exports){
 var util = require('util');
 var error = require('./error');
 
@@ -420,7 +420,7 @@ var enumerable = function(rule, value, source, errors, options) {
 
 module.exports = enumerable;
 
-},{"./error":8,"util":34}],8:[function(require,module,exports){
+},{"./error":8,"util":35}],8:[function(require,module,exports){
 var util = require('util');
 var ValidationError = require('../error');
 var messages = require('../messages');
@@ -449,7 +449,7 @@ var error = function(rule, message) {
 
 module.exports = error;
 
-},{"../error":3,"../messages":5,"util":34}],9:[function(require,module,exports){
+},{"../error":3,"../messages":5,"util":35}],9:[function(require,module,exports){
 module.exports = {
   error: require('./error'),
   required: require('./required'),
@@ -490,7 +490,7 @@ var pattern = function(rule, value, source, errors, options) {
 
 module.exports = pattern;
 
-},{"./error":8,"util":34}],11:[function(require,module,exports){
+},{"./error":8,"util":35}],11:[function(require,module,exports){
 var util = require('util');
 var error = require('./error');
 
@@ -541,7 +541,7 @@ var range = function(rule, value, source, errors, options) {
   }else if( max && !min && val > rule.max ) {
     errors.push(error(rule,
       util.format(options.messages[key].max, rule.field, rule.max)));
-  }else if(min && max && (val < min || val > max) ) {
+  }else if(min && max && (val < rule.min || val > rule.max) ) {
     errors.push(error(rule,
       util.format(options.messages[key].range,
         rule.field, rule.min, rule.max)));
@@ -550,7 +550,7 @@ var range = function(rule, value, source, errors, options) {
 
 module.exports = range;
 
-},{"./error":8,"util":34}],12:[function(require,module,exports){
+},{"./error":8,"util":35}],12:[function(require,module,exports){
 var util = require('util');
 var error = require('./error');
 
@@ -576,7 +576,7 @@ var required = function(rule, value, source, errors, options) {
 
 module.exports = required;
 
-},{"./error":8,"util":34}],13:[function(require,module,exports){
+},{"./error":8,"util":35}],13:[function(require,module,exports){
 var util = require('util');
 var error = require('./error');
 
@@ -653,7 +653,7 @@ var type = function(rule, value, source, errors, options) {
 
 module.exports = type;
 
-},{"./error":8,"util":34}],14:[function(require,module,exports){
+},{"./error":8,"util":35}],14:[function(require,module,exports){
 var util = require('util');
 var error = require('./error');
 
@@ -677,7 +677,7 @@ var whitespace = function(rule, value, source, errors, options) {
 
 module.exports = whitespace;
 
-},{"./error":8,"util":34}],15:[function(require,module,exports){
+},{"./error":8,"util":35}],15:[function(require,module,exports){
 var rules = require('../rule');
 
 /**
@@ -2163,7 +2163,7 @@ module.exports = string;
 }());
 
 }).call(this,require("IrXUsu"))
-},{"IrXUsu":32}],29:[function(require,module,exports){
+},{"IrXUsu":33}],29:[function(require,module,exports){
 (function (global){
 //! moment.js
 //! version : 2.7.0
@@ -4778,6 +4778,8 @@ module.exports = string;
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],30:[function(require,module,exports){
+module.exports=require(28)
+},{"IrXUsu":33}],31:[function(require,module,exports){
 var hasOwn = Object.prototype.hasOwnProperty;
 var toString = Object.prototype.toString;
 var undefined;
@@ -4859,7 +4861,7 @@ module.exports = function extend() {
 };
 
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4884,7 +4886,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4949,14 +4951,14 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5546,7 +5548,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require("IrXUsu"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":33,"IrXUsu":32,"inherits":31}],35:[function(require,module,exports){
+},{"./support/isBuffer":34,"IrXUsu":33,"inherits":32}],36:[function(require,module,exports){
 (function (global){
 //! moment.js
 //! version : 2.8.2
@@ -8365,7 +8367,7 @@ function hasOwnProperty(obj, prop) {
 }).call(this);
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 exports.getSchema = getSchema;
 function getSchema(schema) {
   var dbSchema = {};
@@ -8397,7 +8399,7 @@ function getSchema(schema) {
   return dbSchema;
 }
 
-},{}],37:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 exports.defineGetSet = defineGetSet;
 
 var moment = require('moment');
@@ -8409,6 +8411,9 @@ function defineGetSet(schema, attr) {
       if (prop.model) {
         defineList.call(this, prop.model.ref, attr);
       }
+      break;
+    case "object":
+      defineNested.call(this, prop.model.ref, attr);
       break;
     case "date":
       defineDate.call(this, prop, attr);
@@ -8522,7 +8527,27 @@ function defineList(ListModel, attr) {
   Object.defineProperty(this, attr, getSet);
 }
 
-},{"moment":35}],38:[function(require,module,exports){
+function defineNested(ListModel, attr) {
+  var value = [];
+  var getSet = {
+    get: function () {
+      return value;
+    },
+    set: function (val) {
+      if (typeof val === 'object') {
+        value = new ListModel(val, this);
+      } else {
+        value = val;
+      }
+    },
+    enumerable: true
+  };
+  if (this.__lookupGetter__(attr)) delete getSet.get;
+  if (this.__lookupSetter__(attr)) delete getSet.set;
+  Object.defineProperty(this, attr, getSet);
+}
+
+},{"moment":36}],39:[function(require,module,exports){
 exports.getSwaggerProperties = getSwaggerProperties;
 exports.getSwagger = getSwagger;
 
@@ -8594,7 +8619,7 @@ function getSwagger(schema) {
   return model;
 }
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 var Validator = require('../validator');
 var patterns = {
   EMAIL : /^[a-z0-9\u007F-\uffff!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9\u007F-\uffff!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/,
@@ -8651,11 +8676,16 @@ function getValidation(schema, attr) {
       break;
     case "decimal":
     case "float":
-      obj.type = "float";
+      obj.type = "number";
+      break;
+    case "object":
+      obj.type = "nested";
       break;
     case "array":
-      if (prop.model)
-        obj.modelList = true;
+      if (prop.model) {
+        obj.modelList =true;
+        obj.type = "arrayModel";
+      }
       break;
     default:
       break;
@@ -8663,7 +8693,7 @@ function getValidation(schema, attr) {
   return obj;
 }
 
-},{"../validator":43}],40:[function(require,module,exports){
+},{"../validator":44}],41:[function(require,module,exports){
 var Validator        = require('./validator');
 var Repository       = require('./repository.js');
 var swaggerHelper    = require('./helpers/swagger-helper.js');
@@ -8671,6 +8701,7 @@ var validationHelper = require('./helpers/validator-helper.js');
 var propertyHelper   = require('./helpers/property-helper.js');
 var dbHelper         = require('./helpers/db-helper.js');
 var extend           = require('extend');
+var util           = require('util');
 var Model;
 
 var publicHelpers = {
@@ -8689,7 +8720,8 @@ module.exports = Model = (function () {
     return publicHelpers[schemaName](modelSchema);
   }
 
-  Model._init_    = _init_;
+  Model.init = init;
+  Model.instantiate = instantiate;
   Model.getSchema = getSchema;
 
   Model.prototype.create     = create;
@@ -8704,9 +8736,30 @@ module.exports = Model = (function () {
 
 })();
 
-function _init_(_this, args) {
-  extend(true, _this.constructor.prototype, Model.prototype);
-  _this.constructor.prototype._super = Model;
+function init(ref, schema) {
+  ref.schema = schema;
+  schema.name = ref.name;
+  schema.ref = ref;
+  ref.access =  function access(key) {
+    if (key === 'privates') return schema;
+    var func = accessFunctions[key];
+    if (func)
+      return func.call(this, schema);
+    return schema[key];
+  };
+
+
+  //extend(true, ref.prototype, Model.prototype);
+  ref.prototype = Object.create(Model.prototype, {
+    constructor: {
+      value: ref,
+    }
+  });
+  ref.prototype.super_ = Model;
+
+}
+
+function instantiate(_this, args) {
   initialize.call(_this, args);
 }
 
@@ -8727,15 +8780,14 @@ function initialize(args, schema) {
       return func.call(this, schema);
     return schema[key];
   }
-
   schema = schema || extend(true, {}, ref.schema);
   for (var attr in schema.properties) {
     propertyHelper.defineGetSet.call(this, schema, attr);
     schemaValidation[attr] = validationHelper.getValidation.call(this, schema, attr);
     this[attr] = data[attr];
   }
-  schema.schema = schemaValidation;
-  schema.validators = [ new Validator({validate : schema.schema}) ];
+  schema.schemaValidation = schemaValidation;
+  schema.validators = [ new Validator({validate : schema.schemaValidation}) ];
   if (schema.validatorSchema)
     schema.validators = schema.validators.concat(new Validator({validate: schema.validatorSchema}));
 
@@ -8744,8 +8796,6 @@ function initialize(args, schema) {
   this.constructor.prototype.access = access;
   var DefaultRepository = ref.repository || Model.repository || Repository;
   schema.repository = data.repository || schema.repository ||new DefaultRepository();
-  schema.ref = ref;
-  schema.name = ref.name;
 }
 
 function create(callback) {
@@ -8806,22 +8856,33 @@ function destroy(callback) {
   });
 }
 
-function isValid(validatorsOrCallback, optCallback) {
+function isValid(optionalValidators, callback) {
 
-  var validators = this.access('validators');
-
-  var callback = typeof validatorsOrCallback === 'function' ? validatorsOrCallback : function () {};
-
-  if (validatorsOrCallback && validatorsOrCallback.constructor === Array) {
-    callback = optCallback || function () {};
-    validators = validatorsOrCallback;
+  // retrieve arguments as array
+  var args = [];
+  for (var i = 0; i < arguments.length; i++) {
+    args.push(arguments[i]);
   }
 
-  callback = callback || function () {};
+  // last argument is the callback function.
+  callback = args.pop();
+
+  if (typeof callback !== 'function') {
+    throw new Error("Must pass a callback function");
+  }
+
+  // retrieve default validators
+  var validators = this.access('validators');
+
+  // use optionalValidators as validators when optionalValidators are passed
+  if (args.length > 0) {
+    validators = args[0];
+  }
+
   Validator.validate(this, validators, callback);
 }
 
-},{"./helpers/db-helper.js":36,"./helpers/property-helper.js":37,"./helpers/swagger-helper.js":38,"./helpers/validator-helper.js":39,"./repository.js":41,"./validator":43,"extend":30}],41:[function(require,module,exports){
+},{"./helpers/db-helper.js":37,"./helpers/property-helper.js":38,"./helpers/swagger-helper.js":39,"./helpers/validator-helper.js":40,"./repository.js":42,"./validator":44,"extend":31,"util":35}],42:[function(require,module,exports){
 var Repository;
 module.exports = Repository = (function () {
   function Repository(args) {
@@ -8867,7 +8928,7 @@ function destroy(callback) {
   if (typeof callback === 'function') callback(null, this);
 }
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 var ValidationError;
 module.exports = (function() {
   function ValidationError(msg, field, constr) {
@@ -8882,11 +8943,15 @@ module.exports = (function() {
 
 
 
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 var Validator;
 var ValidationError = require('./validation-error.js');
 var schema = require('async-validate');
+//var ValidationError = schema.error;
 var validateOptions = {first : true, single: true};
+var util = require ('util');
+var async = require('async');
+
 
 module.exports = Validator = (function () {
 
@@ -8911,7 +8976,7 @@ function isValid(model, callback) {
     else {
       var err = this.validate.call(model);
       err = checkError(err);
-      callback(err, fields);
+      callback(err);
     }
   }
   else {
@@ -8921,7 +8986,7 @@ function isValid(model, callback) {
 }
 
 function checkError(err) {
-  if (!err || !err.message || !err.field) throw new Error("Inválid constructor");
+  if (!err || !err.message || !err.field) throw new Error("Invalid constructor");
   return [new ValidationError(err.message, err.field)];
 }
 
@@ -8954,4 +9019,41 @@ function validate(model, validators, callback) {
   }
 }
 
-},{"./validation-error.js":42,"async-validate":2}]},{},[1])
+function arrayModel(rule, value, callback, source, options) {
+  var funcs = [];
+
+  for(var i in value) {
+    funcs.push(value[i].isValid.bind(value[i]));
+  }
+
+  async.series(funcs, function (errors, iterator) {
+    var position = funcs.length - (funcs.length - iterator.length) - 1;
+    for (var err in errors) {
+      errors[err].field = rule.field +  "[" + position + "]." + errors[err].field;
+    }
+    callback(errors);
+  });
+}
+
+function nested(rule, value, callback, source, options) {
+  if (!value) {
+    return callback();
+  }
+
+  if (!(value instanceof source.super_)) {
+    return callback([ new ValidationError(
+      util.format(schema.messages.types.object, rule.field, 'object'),
+      rule.field)]);
+  }
+  value.isValid(function (errors) {
+    for (var err in errors) {
+      errors[err].field = rule.field +  "." + errors[err].field;
+    }
+    callback(errors);
+  });
+}
+
+schema.register('arrayModel', arrayModel);
+schema.register('nested', nested);
+
+},{"./validation-error.js":43,"async":30,"async-validate":2,"util":35}]},{},[1])

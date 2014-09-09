@@ -4,7 +4,7 @@
     "name": "Marcos Rava"
   },
   "name": "model-structure",
-  "version": "0.1.15",
+  "version": "0.2.0",
   "repository": {
     "url": "https://github.com/MarcosRava/model-structure/"
   },
@@ -24,7 +24,8 @@
     "q": "^1.0.1"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "build": "gulp build"
   },
   "engines": {
     "node": "*"

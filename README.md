@@ -2,7 +2,7 @@
 
 `model-structure` is a module that helps you to create Models based on a Schema's Object.
 
-It can: 
+It can:
 
 * Set a custom repository to create, update, get and delete
 * Get Swagger models
@@ -29,15 +29,16 @@ $ npm install model-structure
 
 ## Usage
 ```js
+
 var modelStructure = require('model-structure');
 var Model = modelStructure.Model;
 var Lead = (function (ref){
 
   function Lead(args) {
-    ref._init_(this, args);
+    ref.instantiate(this, args);
   }
 
-  Lead.schema = {
+  var schema = {
     properties: {
       "id" : {
         "type": "integer",
@@ -56,7 +57,7 @@ var Lead = (function (ref){
       },
     }
   }
-
+  ref.init(Lead, schema);
   return Lead;
 
 })(Model);
@@ -139,7 +140,7 @@ lead.isValid(function(err, fields) {
 
 ### DataTypes
 
-Currently Supported Datatypes: 
+Currently Supported Datatypes:
 
 * `String`
 * `Char`
