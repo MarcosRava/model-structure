@@ -20,7 +20,7 @@ It can:
   - [Validating Models](#validating-models)
   - [DataTypes](#datatypes)
   - [Db-migrate](#db-migrate)
-  - [Swagger.io](#swagger.io)
+  - [Swagger.io](#swagger)
   - [Messages](#messages)
 - [Schema Declaration](#schema-declaration)
 - [Browser Support](#browser-support)
@@ -168,7 +168,27 @@ Get model db-migrate schema
 ## Swagger.io
 
 Get model swagger schema
-//TODO
+```js
+var swaggerSchema = {
+  "apiVersion": "0.0.1",
+  "swaggerVersion": "1.2",
+  "basePath": "http://localhost:1214",
+  "resourcePath": "/lead",
+  "apis": [{
+    "path": "/lead/",
+    "operations": [{
+      "description": "Get all leads",
+      "notes": "Returns all leads.",
+      "summary": "Get leads",
+      "method": "GET",
+      "type": "Lead",
+      "nickname": "getAllLeads"
+    }]
+  }],
+  "models": Lead.access('swagger')
+  }
+}
+```
 
 ## Messages
 
