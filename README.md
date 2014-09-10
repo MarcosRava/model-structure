@@ -15,11 +15,16 @@ It can:
 ---
 
 1. [Installation](#installation)
-2. [Usage](#usage)
-  1. [Using Repositories](#using-repositories)
-  2. [Validating Models](#validating-models)
-  3. [DataTypes](#datatypes)
-3. [Browser Support](#browser-support)
+- [Usage](#usage)
+  - [Using Repositories](#using-repositories)
+  - [Validating Models](#validating-models)
+  - [DataTypes](#datatypes)
+  - [Db-migrate](#db-migrate)
+  - [Swagger.io](#swagger.io)
+  - [Messages](#messages)
+- [Schema Declaration](#schema-declaration)
+- [Browser Support](#browser-support)
+- [Running Tests](#running-tests)
 
 
 ## Installation
@@ -155,13 +160,31 @@ Currently Supported Datatypes:
 * `Email`
 * `Nested Objects`
 
+## Db-migrate
+
+Get model db-migrate schema
+//TODO
+
+## Swagger.io
+
+Get model swagger schema
+//TODO
+
+## Messages
+
+Add custom error messages to field or validation
+//TODO
+
+## Schema Declaration
+//TODO
+
 ## Browser Support
 
 You can use on client-side too!
 
 ![IE](https://cloud.githubusercontent.com/assets/398893/3528325/20373e76-078e-11e4-8e3a-1cb86cf506f0.png) | ![Chrome](https://cloud.githubusercontent.com/assets/398893/3528328/23bc7bc4-078e-11e4-8752-ba2809bf5cce.png) | ![Firefox](https://cloud.githubusercontent.com/assets/398893/3528329/26283ab0-078e-11e4-84d4-db2cf1009953.png) | ![Opera](https://cloud.githubusercontent.com/assets/398893/3528330/27ec9fa8-078e-11e4-95cb-709fd11dac16.png) | ![Safari](https://cloud.githubusercontent.com/assets/398893/3528331/29df8618-078e-11e4-8e3e-ed8ac738693f.png)
---- | --- | --- | --- | --- |
-IE 9+ ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔ |
+--- | --- | --- | --- | ---
+IE 9+ ✔ | Latest ✔ | Latest ✔ | Latest ✔ | Latest ✔
 
 ## Running Tests
 
