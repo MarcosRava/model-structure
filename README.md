@@ -58,7 +58,7 @@ var Lead = (function (ref){
       },
       "email" : {
         "type": "email",
-        "message": "is not a valid email!!",
+        "message": "%s field is not a valid email!!",
       },
     }
   }
@@ -197,8 +197,23 @@ var swaggerSchema = {
 ## Messages
 
 Add custom error messages to field or validation
-//TODO
 
+```js
+  var lead= new Lead({id:"not a valid integer"});
+  Model.addMessages('pt-BR', {types: {id: "%s não é um inteiro"}});
+  Model.setLocale('pt-BR');
+  customer.isValid(function (err) {
+    expect(err[0].field).to.be('id');
+    expect(err[0].message).to.contain('id não é um inteiro');
+    Model.setLocale('en');
+    customer.isValid(function (err2) {
+      expect(err2[0].field).to.be('active');
+      expect(err2[0].message).to.contain('id is not an integer');
+      done();
+    });
+  });
+
+```
 ## Schema Declaration
 //TODO
 
