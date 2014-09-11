@@ -8,19 +8,16 @@ function getValidation(schema, attr) {
   var messages = schema.messages || {};
   var prop = schema.properties[attr];
   var obj = {type: prop.type};
-  obj.message = schema.properties[attr].message || messages[obj.type];
+  obj.messages = schema.properties[attr].messages || {};
+  obj.message =  obj.messages.type || messages[obj.type];
   if (prop.length) {
-    if (typeof prop.length === 'object') {
-      //obj.min = obj.length.tooShort || (messages.length ? messages.length.tooShort : "");
-      //obj.max = obj.length.tooLong || (messages.length ? messages.length.tooLong : "");
-      obj.min = prop.length.minimum;
-      obj.max = prop.length.maximum;
-    }
-    else {
-      obj.len = prop.length;
-    }
-
+    obj.len = prop.length;
   }
+  if (prop.minimum || prop.maximum) {
+      obj.min = prop.minimum;
+      obj.max = prop.maximum;
+  }
+
   var msg;
   switch (prop.type) {
     case "enum":

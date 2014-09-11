@@ -4,7 +4,7 @@ var customerSchema = Customer.schema;
 
 describe('Validation', function () {
 
-  var errorExpectedMessage = customerSchema.properties.email.message;
+  var errorExpectedMessage = customerSchema.properties.email.messages.type;
 
   before(function () {
     this.getCustomerFactory = function getCustomerFactory(args) {

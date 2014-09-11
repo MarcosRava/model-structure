@@ -25,25 +25,22 @@ module.exports = Customer = (function (_super) {
     "properties": {
       "id" : {
         "type": "integer",
-        "required": true,
         "primaryKey": true,
         "autoIncrement": true
       },
       "name" : {
         "type": "string",
-        "length": {
-          "minimum": 3,
-          "maximum": 30
-        }
+        "minimum": 3,
+        "maximum": 30
       },
       "email" : {
         "type": "email",
         "required": true,
-        "message": "is not a valid email!!",
         "unique": true,
-        "length": {
-          "minimum": 7,
-          "tooShort": "Short email (custom attribute message)"
+        "minimum": 7,
+        "messages": {
+          "type": "is not a valid email!!",
+          "minimum": "Short email (custom attribute message)"
         }
       },
       "age" : {

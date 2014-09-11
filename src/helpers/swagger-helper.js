@@ -44,11 +44,14 @@ function getSwaggerProperties(schema, attr, model) {
       swagger.type = prop.type;
       break;
   }
-  if (prop.length) {
-    swagger.length = {
-      minimum: String(prop.length.minimum),
-      maximum: String(prop.length.maximum)
-    };
+  if (prop.minimum || prop.maximum) {
+    swagger.length = { };
+    if(prop.minimum) {
+      swagger.length.minimum = String(prop.minimum);
+    }
+    if(prop.maximum) {
+      swagger.length.maximum = String(prop.maximum);
+    }
   }
   return swagger;
 }

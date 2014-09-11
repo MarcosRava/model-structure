@@ -14,10 +14,8 @@ var schema = {
     },
     "addressName" : {
       "type": "string",
-      "length": {
-        "minimum": 3,
-        "maximum": 30
-      }
+      "minimum": 3,
+      "maximum": 30
     },
     "number" : {
       "type": "integer"

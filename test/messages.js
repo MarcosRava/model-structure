@@ -10,7 +10,7 @@ describe('Messages', function(){
       return new Customer(customerData);
     };
   });
-
+  //TODO more messages validations (fields and types)
   describe('Using Model locale', function(){
     it('should change to pt-BR and change again to en', function(done){
       var _this = this;

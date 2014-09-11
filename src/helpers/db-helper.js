@@ -15,8 +15,8 @@ function getSchema(schema) {
     };
     if (prop.type === 'enum')
       dbSchema[i].type = types[prop.values.type] || prop.values.type;
-    if (prop.length && prop.length.maximum)
-      dbSchema[i].len = parseInt(prop.length.maximum);
+    if (prop.maximum)
+      dbSchema[i].len = parseInt(prop.maximum);
     if (prop.unique)
       dbSchema[i].unique = prop.unique;
     if (prop.autoIncrement)

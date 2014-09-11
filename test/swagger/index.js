@@ -10,7 +10,7 @@ var swaggerCustomer = {
   "Customer": {
     "id": "Customer",
     "required": [
-      "id", "email"
+      "email"
     ],
     "properties": {
       "id": {
@@ -26,8 +26,7 @@ var swaggerCustomer = {
       "email": {
         "type": "string",
         "length": {
-          "minimum": "7",
-          "maximum": "undefined"
+          "minimum": "7"
         }
       },
       "age": {
