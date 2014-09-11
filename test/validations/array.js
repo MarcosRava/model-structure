@@ -49,7 +49,6 @@ describe('Validation', function () {
             expect(err).to.be(null);
             expect(customers).to.be.an(Array);
             expect(customers[0]).to.be.a(Customer);
-            console.log(JSON.stringify(customers));
             done();
           });
         });

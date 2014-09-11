@@ -137,9 +137,11 @@ function get() {
       return;
     }
     if (data && data.constructor === Array) {
-      for(var i in data) {
-        data[i].repository = repository;
-        data[i] = new Ref(data[i]);
+      if (!Ref.schema.notInstantiate) {
+        for(var i in data) {
+          data[i].repository = repository;
+          data[i] = new Ref(data[i]);
+        }
       }
     } else
     {
@@ -158,7 +160,7 @@ function load() {
       if (typeof callback === 'function') callback(err);
       return;
     }
-    if (data && data.constructor !== Array) {
+    if (!_this.constructor.schema.notInstantiate) {
       initialize.call(_this, data, _this.access('privates'));
     }
     if (typeof callback === 'function') callback(err, data);
@@ -174,7 +176,7 @@ function update(callback) {
       return;
     }
     repository.update.call(_this, function (err, data) {
-      if (data && data.constructor !== Array) {
+      if (!_this.constructor.schema.notInstantiate)  {
         initialize.call(_this, data, _this.access('privates'));
       }
       callback(err, data);
