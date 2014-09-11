@@ -20,7 +20,7 @@ It can:
   - [Validating Models](#validating-models)
   - [DataTypes](#datatypes)
   - [Db-migrate](#db-migrate)
-  - [Swagger.io](#swagger)
+  - [Swagger](#swagger)
   - [Messages](#messages)
 - [Schema Declaration](#schema-declaration)
 - [Browser Support](#browser-support)
@@ -86,6 +86,7 @@ var Repository = (function () {
   function Repository() {
     Repository.prototype.create = create;
     Repository.prototype.get = get;
+    Repository.prototype.load = load;
     Repository.prototype.update = update;
     Repository.prototype.destroy = destroy;
   }
@@ -96,15 +97,18 @@ var Repository = (function () {
     if (typeof callback === 'function') callback(null, this);
   }
 
-  function get(args, callback) {
+  function load(args, callback) {
     args = args || {};
     var data = args.data || {};
     if (args.id) {
       data = datas[args.id];
-    } else {
-      data = [];
-      for (var i in datas) data.push(datas[i]);
     }
+    callback(null, data);
+  }
+
+  function get(args, callback) {
+    var data = [];
+    for (var i in datas) data.push(JSON.parse(JSON.stringify(datas[i])));
     callback(null, data);
   }
 
@@ -126,7 +130,7 @@ var data = {name: 'Kurosaki Ichigo', email: 'ichi@soulsociety.com'};
 data.repository = new Repository();
 var lead = new Lead(data);
 lead.create(function(err, leadResponse) {
-  lead.get({id:lead.id}, function (err, secondResponse) {
+  lead.load({id:lead.id}, function (err, secondResponse) {
     // get saved lead;
   });
 });
@@ -165,7 +169,7 @@ Currently Supported Datatypes:
 Get model db-migrate schema
 //TODO
 
-## Swagger.io
+## Swagger
 
 Get model swagger schema
 ```js

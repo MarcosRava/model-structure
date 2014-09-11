@@ -32,7 +32,7 @@ module.exports = Model = (function () {
   Model.getSchema = getSchema;
 
   Model.prototype.create     = create;
-  Model.prototype.get        = get;
+  Model.prototype.load        = load;
   Model.prototype.update     = update;
   Model.prototype.destroy    = destroy;
   Model.prototype.isValid    = isValid;
@@ -61,6 +61,7 @@ function init(ref, schema) {
     }
   });
   ref.prototype.super_ = Model;
+  ref.get = get;
 
 }
 
@@ -101,6 +102,7 @@ function initialize(args, schema) {
   this.constructor.prototype.access = access;
   var DefaultRepository = ref.repository || Model.repository || Repository;
   schema.repository = data.repository || schema.repository ||new DefaultRepository();
+  return this;
 }
 
 function create(callback) {
@@ -119,10 +121,39 @@ function create(callback) {
 }
 
 function get() {
+  var args = [];
+  for (var i = 0; i < arguments.length; i++) {
+    args.push(arguments[i]);
+  }
+  var Ref = this;
+  var DefaultRepository = this.repository || Model.repository || Repository;
+  var repository = args[0].repository ||new DefaultRepository();
+
+  // last argument is the callback function.
+  var callback = args.pop();
+  repository.get(args.length > 1 ? args[0] : null, function (err, data) {
+    if (err) {
+      if (typeof callback === 'function') callback(err);
+      return;
+    }
+    if (data && data.constructor === Array) {
+      for(var i in data) {
+        data[i].repository = repository;
+        data[i] = new Ref(data[i]);
+      }
+    } else
+    {
+        throw new Error("Response should be an Array");
+    }
+    if (typeof callback === 'function') callback(err, data);
+  });
+}
+
+function load() {
   var _this = this;
   var repository = this.access('repository');
   var callback = arguments.length > 1 ? arguments[1] : arguments[0];
-  repository.get.call(this, arguments.length > 1 ? arguments[0] : null, function (err, data) {
+  repository.load.call(this, arguments.length > 1 ? arguments[0] : null, function (err, data) {
     if (err) {
       if (typeof callback === 'function') callback(err);
       return;

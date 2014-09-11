@@ -5,6 +5,7 @@ module.exports = Repository = (function () {
 
     Repository.prototype.create = create;
     Repository.prototype.get = get;
+    Repository.prototype.load = load;
     Repository.prototype.update = update;
     Repository.prototype.destroy = destroy;
   }
@@ -21,15 +22,18 @@ function create(callback) {
   if (typeof callback === 'function') callback(null, this);
 }
 
-function get(args, callback) {
+function load(args, callback) {
   args = args || {};
   var data = args.data || {};
   if (args.id) {
     data = datas[args.id];
-  } else {
-    data = [];
-    for (var i in datas) data.push(datas[i]);
   }
+  callback(null, data);
+}
+
+function get(args, callback) {
+  var data = [];
+  for (var i in datas) data.push(JSON.parse(JSON.stringify(datas[i])));
   callback(null, data);
 }
 
