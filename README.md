@@ -33,40 +33,41 @@ It can:
 ```sh
 $ npm install model-structure
 ```
+## `Model.instantiate(this, data, options)`;
+ * `this` -
+ * `data` -
+ * `options` -
+
 
 ## Usage
 [Sample object](/test/fixtures/models/customer.js)
 ```js
 
-var modelStructure = require('model-structure');
-var Model = modelStructure.Model;
-var Lead = (function (ref){
+var Model = require('model-structure');
 
-  function Lead(args) {
-    ref.instantiate(this, args);
+function Lead(args, options) {
+  Model.instantiate(this, args, options);
+}
+
+var schema = {
+  properties: {
+    "id" : {
+      "type": "integer",
+      "primaryKey": true,
+      "autoIncrement": true
+    },
+    "name" : {
+      "type": "string",
+      "maximum": 30
+    },
+    "email" : {
+      "type": "email",
+      "message": "%s field is not a valid email!!",
+    },
   }
+}
+Model.init(Lead, schema);
 
-  var schema = {
-    properties: {
-      "id" : {
-        "type": "integer",
-        "primaryKey": true,
-        "autoIncrement": true
-      },
-      "name" : {
-        "type": "string",
-        "maximum": 30
-      },
-      "email" : {
-        "type": "email",
-        "message": "%s field is not a valid email!!",
-      },
-    }
-  }
-  ref.init(Lead, schema);
-  return Lead;
-
-})(Model);
 
 var data = {name: 'Kurosaki Ichigo', email: 'ichi@soulsociety.com'};
 var lead = new Lead(data);
@@ -90,7 +91,7 @@ schema.messages = {
   "integer": "Integer error message",
   "float": "Float error message",
 }
-``` 
+```
 
 #### `schema.notInstantiate = false`
 
@@ -125,53 +126,44 @@ The Model calls repository's functions passing object with `this` context.
 ```js
 var datas = {};
 // Simple repository to use memory to save data
-var Repository = (function () {
-  function Repository() {
-    Repository.prototype.create = create;
-    Repository.prototype.get = get;
-    Repository.prototype.load = load;
-    Repository.prototype.update = update;
-    Repository.prototype.destroy = destroy;
-  }
 
-  function create(callback) {
+function Repository() {
+  Repository.prototype.create = function create(callback) {
     this.id = new Date().getTime();
     datas[this.id] = this;
     if (typeof callback === 'function') callback(null, this);
-  }
+  };
 
-  function load(args, callback) {
+  Repository.prototype.get = function get(args, callback) {
+    var data = [];
+    for (var i in datas) data.push(JSON.parse(JSON.stringify(datas[i])));
+    callback(null, data);
+  };
+
+  Repository.prototype.load = function load(args, callback) {
     args = args || {};
     var data = args.data || {};
     if (args.id) {
       data = datas[args.id];
     }
     callback(null, data);
-  }
+  };
 
-  function get(args, callback) {
-    var data = [];
-    for (var i in datas) data.push(JSON.parse(JSON.stringify(datas[i])));
-    callback(null, data);
-  }
-
-  function update(callback) {
+  Repository.prototype.update = function update(callback) {
     datas[this.id] = this;
     if (typeof callback === 'function') callback(null, this);
-  }
+  };
 
-  function destroy(callback) {
+  Repository.prototype.destroy = function destroy(callback) {
     delete datas[this.id];
     if (typeof callback === 'function') callback(null, this);
-  }
-
-  return Repository;
-
-})();
+  };
+}
 
 var data = {name: 'Kurosaki Ichigo', email: 'ichi@soulsociety.com'};
-data.repository = new Repository();
-var lead = new Lead(data);
+var options = {};
+options.repository = new Repository();
+var lead = new Lead(data, options);
 lead.create(function(err, leadResponse) {
   lead.load({id:lead.id}, function (err, secondResponse) {
     // get saved lead;
@@ -183,12 +175,43 @@ lead.create(function(err, leadResponse) {
 The validations methods are fired before `create` or `update` methods. But you may trigger it directly:
 ```js
 var data = {name: 'Kurosaki Ichigo', email: 'ichi@soulsociety.com'};
-data.repository = new Repository();
-var lead = new Lead(data);
+options.repository = new Repository();
+var lead = new Lead(data, options);
 lead.isValid(function(err, fields) {
 
 });
 ```
+
+### Custom Validations
+```js
+var Validator = Model.Validator;
+var validators = [];
+var validator = new Validator({validate: firstLetterLowerCase});
+var expect = require('expect.js');
+var error = {message: "Name field must be first letter in lowercase", field: 'name'};;
+
+function firstLetterLowerCase(done) {
+  if (this.name[0].toLowerCase() === this.name[0]) {
+    done();
+  } else {
+    done(error);
+  }
+}
+validators.push(validator);
+lead.isValid(validators, function (err) {
+  expect(err[0].field).to.be(error.field);
+  expect(err[0].message).to.contain(error.message);
+  done();
+});
+// OR
+Validator.validate(lead, validators, function (err) {
+  expect(err[0].field).to.be(error.field);
+  expect(err[0].message).to.contain(error.message);
+  done();
+});
+```
+//TODO
+
 
 ### Swagger
 
@@ -220,17 +243,17 @@ var swaggerSchema = {
 Add custom error messages to field or validation
 
 ```js
-  var lead= new Lead({id:"not a valid integer"});
-  Model.addMessages('pt-BR', {types: {id: "%s não é um inteiro"}});
+  var expect = require('expect.js');
+  var lead = new Lead({id:"not a valid integer"});
+  Model.addMessages('pt-BR', {types: {integer: "%s não é um inteiro"}});
   Model.setLocale('pt-BR');
-  customer.isValid(function (err) {
+  lead.isValid(function (err) {
     expect(err[0].field).to.be('id');
     expect(err[0].message).to.contain('id não é um inteiro');
     Model.setLocale('en');
-    customer.isValid(function (err2) {
+    lead.isValid(function (err2) {
       expect(err2[0].field).to.be('active');
       expect(err2[0].message).to.contain('id is not an integer');
-      done();
     });
   });
 

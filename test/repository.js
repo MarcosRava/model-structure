@@ -1,6 +1,5 @@
 var expect = require('expect.js');
-var model = require('../index.js');
-var Model = model.Model;
+var Model = require('../index.js');
 var Customer = require('./fixtures/models/customer.js');
 var modelRepository = require('./fixtures/repositories/modelRepository.js');
 var customerRepository = require('./fixtures/repositories/customerRepository.js');

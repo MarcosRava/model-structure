@@ -1,5 +1,5 @@
 var expect = require('expect.js');
-var Model = require('../../index.js').Model;
+var Model = require('../../index.js');
 var Customer = require('../fixtures/models/customer.js');
 var customerData = require('../fixtures/data/customer/basic.json');
 

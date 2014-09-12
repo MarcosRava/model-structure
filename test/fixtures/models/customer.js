@@ -1,5 +1,4 @@
-var model = require('../../../index.js');
-var Model = model.Model;
+var Model = require('../../../index.js');
 var Phone = require('./phone.js');
 var Address = require('./address.js');
 
