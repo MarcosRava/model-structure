@@ -1,6 +1,6 @@
 #Model Structure
 
-`model-structure` is a module that helps you to create Models based on a Schema's Object.
+`model-structure` helps you to create Models based on a Schema's Object. :godmode:
 
 It can:
 
@@ -14,18 +14,20 @@ It can:
 
 ---
 
+
 1. [Installation](#installation)
-- [Usage](#usage)
+2. [Usage](#usage)
+  - [Schema Declaration](#schema-declaration)
   - [Using Repositories](#using-repositories)
   - [Validating Models](#validating-models)
-  - [DataTypes](#datatypes)
-  - [Db-migrate](#db-migrate)
-  - [Swagger](#swagger)
+  - [Swagger](#validating-models)
   - [Messages](#messages)
-- [Schema Declaration](#schema-declaration)
-- [Browser Support](#browser-support)
-- [Running Tests](#running-tests)
-
+  - [Data/Object Definition](#dataobject-definition)
+    -  [Data Types](#data-types)
+    -  [ENUM Object](#enum-object)
+    -  [Model Ref Object](#model-ref-object)
+3. [Browser Support](#browser-support)
+4. [Running Tests](#running-tests)
 
 ## Installation
 ```sh
@@ -33,6 +35,7 @@ $ npm install model-structure
 ```
 
 ## Usage
+[Sample object](/test/fixtures/models/customer.js)
 ```js
 
 var modelStructure = require('model-structure');
@@ -52,9 +55,7 @@ var Lead = (function (ref){
       },
       "name" : {
         "type": "string",
-        "length": {
-          "maximum": 30
-        }
+        "maximum": 30
       },
       "email" : {
         "type": "email",
@@ -74,6 +75,48 @@ lead.create(function(err, leadResponse) {
 });
 ```
 
+### Schema Declaration
+
+```js
+var schema = {};
+```
+
+#### `schema.messages = {}`
+
+Schema error messages based on [Data Type](#data-types).
+
+```js
+schema.messages = {
+  "integer": "Integer error message",
+  "float": "Float error message",
+}
+``` 
+
+#### `schema.notInstantiate = false`
+
+If `true`, gets exactly the return data from Repository.
+
+#### `schema.properties = {}`
+
+Property | Type | Description
+-------- | ---- | -----------
+`type` |  [`String - Data Type`](#data-types) | **Required**.
+`primaryKey` | `Boolean` |
+`autoIncrement` | `Boolean` |
+`minimum` | `Number` | If `type` is a `Number`, minimum value. If it's a `String`, minimum length.
+`maximum` | `Number` | If `type` is a `Number`, maximum value. If it's a `String`, maximum length.
+`values` | [`Object - ENUM`](#enum-object) | .
+`model` | [`Object - Model Ref`](#model-ref-object) |
+
+```js
+schema.properties = {
+  "id": {
+    "type": "integer",
+    "primaryKey": true,
+    "autoIncrement": true
+  }
+}
+```
 
 ### Using Repositories
 
@@ -147,31 +190,9 @@ lead.isValid(function(err, fields) {
 });
 ```
 
-### DataTypes
+### Swagger
 
-Currently Supported Datatypes:
-
-* `String`
-* `Char`
-* `Decimal`
-* `Float`
-* `Integer`
-* `Boolean`
-* `Date`
-* `Datetime`
-* `Enum`
-* `Array`
-* `Email`
-* `Nested Objects`
-
-## Db-migrate
-
-Get model db-migrate schema
-//TODO
-
-## Swagger
-
-Get model swagger schema
+Get Swagger Model schema
 ```js
 var swaggerSchema = {
   "apiVersion": "0.0.1",
@@ -194,7 +215,7 @@ var swaggerSchema = {
 }
 ```
 
-## Messages
+### Messages
 
 Add custom error messages to field or validation
 
@@ -214,8 +235,38 @@ Add custom error messages to field or validation
   });
 
 ```
-## Schema Declaration
-//TODO
+
+### Data/Object Definition
+
+#### Data Types
+
+Currently Supported Datatypes:
+
+* `String`
+* `Char`
+* `Decimal`
+* `Float`
+* `Integer`
+* `Boolean`
+* `Date`
+* `Datetime`
+* `Enum`
+* `Array`
+* `Email`
+* `Nested Objects`
+
+#### ENUM Object
+
+Property | Type | Description
+-------- | ---- | -----------
+`ref` | `Array/Object` | Reference Values
+`type` | [`String - Data Type`](#data-types) |
+
+#### Model Ref Object
+
+Property | Type | Description
+-------- | ---- | -----------
+`ref` | `Object - Model Structure` | A `Model Structure` instance
 
 ## Browser Support
 

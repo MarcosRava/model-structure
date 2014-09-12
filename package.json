@@ -6,7 +6,13 @@
   "contributors": [
     {
       "name": "Fabrício Ferrari de Campos",
-      "email": "ffc.fabricio@gmail.com"
+      "email": "ffc.fabricio@gmail.com",
+      "url": "http://vizir.com.br/"
+    },
+    {
+      "name": "Romário da Silva Lima",
+      "email": "r.lima616@gmail.com",
+      "url": "http://airroom.com.br/"
     }
   ],
   "name": "model-structure",
