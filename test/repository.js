@@ -17,7 +17,7 @@ describe('Repository', function(){
       expect(customer.access('repository').constructor.name).to.be('Repository');
     });
     it('should use argument Repository', function() {
-      var customer = new Customer({repository: new argumentRepository()});
+      var customer = new Customer({}, {repository: new argumentRepository()});
       expect(customer.access('repository').constructor.name).to.be('ArgumentRepository');
     });
     it('should use Customer Repository', function() {

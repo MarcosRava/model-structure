@@ -15,8 +15,7 @@ var publicHelpers = {
 
 module.exports = Model = (function () {
 
-  function Model(args) {
-    args = args || {};
+  function Model() {
     throw new Error("Cannot instantiate this class");
   }
 
@@ -65,8 +64,9 @@ function init(ref, schema) {
 
 }
 
-function instantiate(_this, args) {
-  initialize.call(_this, args);
+function instantiate(_this, args, options) {
+  options = extend(true, options, _this.constructor.schema);
+  initialize.call(_this, args, options);
 }
 
 var accessFunctions = {
@@ -93,15 +93,14 @@ function initialize(args, schema) {
     this[attr] = data[attr];
   }
   schema.schemaValidation = schemaValidation;
+  if (!schema.validators || schema.validators.constructor !== Array) {
+    schema.validators = [];
+  }
   schema.validators = [ new Validator({validate : schema.schemaValidation}) ];
-  if (schema.validatorSchema)
-    schema.validators = schema.validators.concat(new Validator({validate: schema.validatorSchema}));
 
-  if (data.validators && data.validators.constructor === Array)
-    schema.validators = schema.validators.concat(data.validators);
   this.constructor.prototype.access = access;
   var DefaultRepository = ref.repository || Model.repository || Repository;
-  schema.repository = data.repository || schema.repository ||new DefaultRepository();
+  schema.repository = schema.repository ||new DefaultRepository();
   return this;
 }
 

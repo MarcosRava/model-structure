@@ -7,9 +7,9 @@ var Customer;
 
 
 
-module.exports = Customer = (function (_super) {
-  function Customer(args) {
-    _super.instantiate(this, args);
+module.exports = Customer = (function () {
+  function Customer(args, options) {
+    Model.instantiate(this, args, options);
   }
 
   Customer.STATUS = {
@@ -93,7 +93,7 @@ module.exports = Customer = (function (_super) {
     }
   };
 
-  _super.init(Customer, schema);
+  Model.init(Customer, schema);
 
   return Customer;
-})(Model);
+})();

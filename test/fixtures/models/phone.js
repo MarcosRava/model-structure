@@ -22,11 +22,11 @@ var schema = {
   }
 };
 
-module.exports = Phone = (function (_super) {
-  function Phone(args) {
-    _super.instantiate(this, args);
+module.exports = Phone = (function () {
+  function Phone(args, options) {
+    Model.instantiate(this, args, options);
   }
-  _super.init(Phone, schema);
+  Model.init(Phone, schema);
   return Phone;
-})(Model);
+})();
 

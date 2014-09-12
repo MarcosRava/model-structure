@@ -26,10 +26,10 @@ var schema = {
   }
 };
 
-module.exports = Address = (function (_super) {
-  function Address(args) {
-    _super.instantiate(this, args);
+module.exports = Address = (function () {
+  function Address(args, options) {
+    Model.instantiate(this, args, options);
   }
-  _super.init(Address, schema);
+  Model.init(Address, schema);
   return Address;
-})(Model);
+})();
