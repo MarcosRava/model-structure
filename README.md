@@ -21,6 +21,7 @@ It can:
   - [Using Repositories](#using-repositories)
   - [Validating Models](#validating-models)
   - [Swagger](#validating-models)
+  - [Node DB Migrate](#validating-models)
   - [Messages](#messages)
   - [Data/Object Definition](#dataobject-definition)
     -  [Data Types](#data-types)
@@ -212,7 +213,6 @@ Validator.validate(lead, validators, function (err) {
 ```
 //TODO
 
-
 ### Swagger
 
 Get Swagger Model schema
@@ -236,6 +236,32 @@ var swaggerSchema = {
   "models": Lead.access('swagger')
   }
 }
+```
+
+### Node DB Migrate
+If you are using [node-db-migrate](https://github.com/kunklejr/node-db-migrate) to manager your migrations, you can get the migration schema directly from `Model.getSchema('dbMigrate', [YOUR_SCHEMA])`.
+```js
+  var schema = {
+    "properties": {
+      "id" : {
+        "type": "integer",
+        "primaryKey": true,
+        "autoIncrement": true
+      },
+      "name" : {
+        "type": "string",
+        "minimum": 3,
+        "maximum": 30
+      },
+      "email" : {
+        "type": "email",
+        "required": true,
+        "unique": true,
+        "minimum": 7
+      }
+    }
+  }
+  Model.getSchema('dbMigrate', schema); // returns the node-db-migrate schema
 ```
 
 ### Messages
