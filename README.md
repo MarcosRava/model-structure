@@ -34,11 +34,23 @@ It can:
 ```sh
 $ npm install model-structure
 ```
-## `Model.instantiate(this, data, options)`;
- * `this` -
- * `data` -
- * `options` -
 
+## `Model.init(constructor, schema)`;
+ Used to bind prototype properties in object constructor
+
+ * `constructor` - Object constructor
+ * `schema` - object [schema](#schema-declaration) with properties details
+
+## `Model.instantiate(instance, data, options)`;
+ Used inside object constructor
+
+ * `instance` - `this` reference
+ * `data` - object data attributes
+ * `options` - Model options
+   - ### options
+
+     - `repository` - [Repository Object](#using-repositories) - contains object with crud functions
+     - `validator`- [Validators Array](#custom-validations) - an array with validators to be used against object data
 
 ## Usage
 [Sample object](/test/fixtures/models/customer.js)
@@ -211,7 +223,7 @@ Validator.validate(lead, validators, function (err) {
   done();
 });
 ```
-//TODO
+//TODO More examples
 
 ### Swagger
 
