@@ -4,22 +4,18 @@
   var Model = require('./src/model');
   var Validator = require('./src/validator');
   var ValidationError = require('./src/validation-error.js');
+  //Model.Model = Model;
+  Model.Validator = Validator;
+  Model.ValidationError = ValidationError;
 
   if (exports) {
-    if (module && module.exports) exports = module.exports = {Model: Model, Validator: Validator, ValidationError: ValidationError};
-    exports.Model = Model;
-    exports.Validator = Validator;
-    exports.ValidationError = ValidationError;
+    if (module && module.exports) exports = module.exports = Model;
   }
   if (this.window && window) {
     window.Model = Model;
-    window.Validator = Validator;
-    window.ValidationError = ValidationError;
   }
   if (define && define.amd) {
     define("Model", [], function () { return Model; });
-    define("Validator", [], function () { return Validator; });
-    define("ValidationError", [], function () { return ValidationError; });
   }
 })(
     typeof exports !== 'undefined' ? exports : null,
@@ -5551,7 +5547,7 @@ function hasOwnProperty(obj, prop) {
 },{"./support/isBuffer":34,"IrXUsu":33,"inherits":32}],36:[function(require,module,exports){
 (function (global){
 //! moment.js
-//! version : 2.8.2
+//! version : 2.8.3
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -5562,7 +5558,7 @@ function hasOwnProperty(obj, prop) {
     ************************************/
 
     var moment,
-        VERSION = '2.8.2',
+        VERSION = '2.8.3',
         // the global-scope this is NOT the global object in Node.js
         globalScope = typeof global !== 'undefined' ? global : this,
         oldGlobalMoment,
@@ -7045,6 +7041,9 @@ function hasOwnProperty(obj, prop) {
         for (i = 0; i < config._f.length; i++) {
             currentScore = 0;
             tempConfig = copyConfig({}, config);
+            if (config._useUTC != null) {
+                tempConfig._useUTC = config._useUTC;
+            }
             tempConfig._pf = defaultParsingFlags();
             tempConfig._f = config._f[i];
             makeDateFromStringAndFormat(tempConfig);
@@ -7109,6 +7108,14 @@ function hasOwnProperty(obj, prop) {
         }
     }
 
+    function map(arr, fn) {
+        var res = [], i;
+        for (i = 0; i < arr.length; ++i) {
+            res.push(fn(arr[i], i));
+        }
+        return res;
+    }
+
     function makeDateFromInput(config) {
         var input = config._i, matched;
         if (input === undefined) {
@@ -7120,7 +7127,9 @@ function hasOwnProperty(obj, prop) {
         } else if (typeof input === 'string') {
             makeDateFromString(config);
         } else if (isArray(input)) {
-            config._a = input.slice(0);
+            config._a = map(input.slice(0), function (obj) {
+                return parseInt(obj, 10);
+            });
             dateFromConfig(config);
         } else if (typeof(input) === 'object') {
             dateFromObject(config);
@@ -7675,7 +7684,7 @@ function hasOwnProperty(obj, prop) {
                 this._isUTC = false;
 
                 if (keepLocalTime) {
-                    this.add(this._d.getTimezoneOffset(), 'm');
+                    this.add(this._dateTzOffset(), 'm');
                 }
             }
             return this;
@@ -7693,7 +7702,7 @@ function hasOwnProperty(obj, prop) {
         diff : function (input, units, asFloat) {
             var that = makeAs(input, this),
                 zoneDiff = (this.zone() - that.zone()) * 6e4,
-                diff, output;
+                diff, output, daysAdjust;
 
             units = normalizeUnits(units);
 
@@ -7704,11 +7713,12 @@ function hasOwnProperty(obj, prop) {
                 output = ((this.year() - that.year()) * 12) + (this.month() - that.month());
                 // adjust by taking difference in days, average number of days
                 // and dst in the given months.
-                output += ((this - moment(this).startOf('month')) -
-                        (that - moment(that).startOf('month'))) / diff;
+                daysAdjust = (this - moment(this).startOf('month')) -
+                    (that - moment(that).startOf('month'));
                 // same as above but with zones, to negate all dst
-                output -= ((this.zone() - moment(this).startOf('month').zone()) -
-                        (that.zone() - moment(that).startOf('month').zone())) * 6e4 / diff;
+                daysAdjust -= ((this.zone() - moment(this).startOf('month').zone()) -
+                        (that.zone() - moment(that).startOf('month').zone())) * 6e4;
+                output += daysAdjust / diff;
                 if (units === 'year') {
                     output = output / 12;
                 }
@@ -7817,18 +7827,33 @@ function hasOwnProperty(obj, prop) {
         },
 
         isAfter: function (input, units) {
-            units = typeof units !== 'undefined' ? units : 'millisecond';
-            return +this.clone().startOf(units) > +moment(input).startOf(units);
+            units = normalizeUnits(typeof units !== 'undefined' ? units : 'millisecond');
+            if (units === 'millisecond') {
+                input = moment.isMoment(input) ? input : moment(input);
+                return +this > +input;
+            } else {
+                return +this.clone().startOf(units) > +moment(input).startOf(units);
+            }
         },
 
         isBefore: function (input, units) {
-            units = typeof units !== 'undefined' ? units : 'millisecond';
-            return +this.clone().startOf(units) < +moment(input).startOf(units);
+            units = normalizeUnits(typeof units !== 'undefined' ? units : 'millisecond');
+            if (units === 'millisecond') {
+                input = moment.isMoment(input) ? input : moment(input);
+                return +this < +input;
+            } else {
+                return +this.clone().startOf(units) < +moment(input).startOf(units);
+            }
         },
 
         isSame: function (input, units) {
-            units = units || 'ms';
-            return +this.clone().startOf(units) === +makeAs(input, this).startOf(units);
+            units = normalizeUnits(units || 'millisecond');
+            if (units === 'millisecond') {
+                input = moment.isMoment(input) ? input : moment(input);
+                return +this === +input;
+            } else {
+                return +this.clone().startOf(units) === +makeAs(input, this).startOf(units);
+            }
         },
 
         min: deprecate(
@@ -7868,7 +7893,7 @@ function hasOwnProperty(obj, prop) {
                     input = input * 60;
                 }
                 if (!this._isUTC && keepLocalTime) {
-                    localAdjust = this._d.getTimezoneOffset();
+                    localAdjust = this._dateTzOffset();
                 }
                 this._offset = input;
                 this._isUTC = true;
@@ -7886,7 +7911,7 @@ function hasOwnProperty(obj, prop) {
                     }
                 }
             } else {
-                return this._isUTC ? offset : this._d.getTimezoneOffset();
+                return this._isUTC ? offset : this._dateTzOffset();
             }
             return this;
         },
@@ -7990,10 +8015,15 @@ function hasOwnProperty(obj, prop) {
         // instance.  Otherwise, it will return the locale configuration
         // variables for this instance.
         locale : function (key) {
+            var newLocaleData;
+
             if (key === undefined) {
                 return this._locale._abbr;
             } else {
-                this._locale = moment.localeData(key);
+                newLocaleData = moment.localeData(key);
+                if (newLocaleData != null) {
+                    this._locale = newLocaleData;
+                }
                 return this;
             }
         },
@@ -8004,14 +8034,19 @@ function hasOwnProperty(obj, prop) {
                 if (key === undefined) {
                     return this.localeData();
                 } else {
-                    this._locale = moment.localeData(key);
-                    return this;
+                    return this.locale(key);
                 }
             }
         ),
 
         localeData : function () {
             return this._locale;
+        },
+
+        _dateTzOffset : function () {
+            // On Firefox.24 Date#getTimezoneOffset returns a floating point.
+            // https://github.com/moment/moment/pull/1871
+            return Math.round(this._d.getTimezoneOffset() / 15) * 15;
         }
     });
 
@@ -8209,19 +8244,21 @@ function hasOwnProperty(obj, prop) {
             var days, months;
             units = normalizeUnits(units);
 
-            days = this._days + this._milliseconds / 864e5;
             if (units === 'month' || units === 'year') {
+                days = this._days + this._milliseconds / 864e5;
                 months = this._months + daysToYears(days) * 12;
                 return units === 'month' ? months : months / 12;
             } else {
-                days += yearsToDays(this._months / 12);
+                // handle milliseconds separately because of floating point math errors (issue #1867)
+                days = this._days + yearsToDays(this._months / 12);
                 switch (units) {
-                    case 'week': return days / 7;
-                    case 'day': return days;
-                    case 'hour': return days * 24;
-                    case 'minute': return days * 24 * 60;
-                    case 'second': return days * 24 * 60 * 60;
-                    case 'millisecond': return days * 24 * 60 * 60 * 1000;
+                    case 'week': return days / 7 + this._milliseconds / 6048e5;
+                    case 'day': return days + this._milliseconds / 864e5;
+                    case 'hour': return days * 24 + this._milliseconds / 36e5;
+                    case 'minute': return days * 24 * 60 + this._milliseconds / 6e4;
+                    case 'second': return days * 24 * 60 * 60 + this._milliseconds / 1000;
+                    // Math.floor prevents floating point math errors here
+                    case 'millisecond': return Math.floor(days * 24 * 60 * 60 * 1000) + this._milliseconds;
                     default: throw new Error('Unknown unit ' + units);
                 }
             }
@@ -8375,17 +8412,18 @@ function getSchema(schema) {
     "integer" : "int",
     "email" : "string",
     "float" : "decimal",
+    "datetime": "timestamp"
   };
   for (var i in schema.properties) {
     var prop = schema.properties[i];
-    if (prop.type === 'array' || i.indexOf('_') === 0) continue;
+    if (propertyInNotConvertedProperties(prop)) continue;
     dbSchema[i] = {
       type: types[prop.type.trim()] || prop.type,
     };
     if (prop.type === 'enum')
       dbSchema[i].type = types[prop.values.type] || prop.values.type;
-    if (prop.length && prop.length.maximum)
-      dbSchema[i].len = parseInt(prop.length.maximum);
+    if (prop.maximum)
+      dbSchema[i].len = parseInt(prop.maximum);
     if (prop.unique)
       dbSchema[i].unique = prop.unique;
     if (prop.autoIncrement)
@@ -8395,8 +8433,11 @@ function getSchema(schema) {
     if (prop.required && !prop.primaryKey)
       dbSchema[i].notNull = prop.required;
   }
-  dbSchema.createdAt = dbSchema.updatedAt = 'datetime';
   return dbSchema;
+
+  function propertyInNotConvertedProperties (prop) {
+    return prop.type === 'array' || i.indexOf('_') === 0 || prop.type === 'object';
+  }
 }
 
 },{}],38:[function(require,module,exports){
@@ -8564,6 +8605,10 @@ function getSwaggerProperties(schema, attr, model) {
         model[prop.model.ref.name] = getSwagger(prop.model.ref.schema)[prop.model.ref.name];
       }
       break;
+    case "object":
+      swagger = {$ref: prop.model.ref.name};
+      model[prop.model.ref.name] = getSwagger(prop.model.ref.schema)[prop.model.ref.name];
+      break;
     case "decimal":
     case "float":
       swagger.type = 'number';
@@ -8590,11 +8635,14 @@ function getSwaggerProperties(schema, attr, model) {
       swagger.type = prop.type;
       break;
   }
-  if (prop.length) {
-    swagger.length = {
-      minimum: String(prop.length.minimum),
-      maximum: String(prop.length.maximum)
-    };
+  if (prop.minimum || prop.maximum) {
+    swagger.length = { };
+    if(prop.minimum) {
+      swagger.length.minimum = String(prop.minimum);
+    }
+    if(prop.maximum) {
+      swagger.length.maximum = String(prop.maximum);
+    }
   }
   return swagger;
 }
@@ -8630,19 +8678,16 @@ function getValidation(schema, attr) {
   var messages = schema.messages || {};
   var prop = schema.properties[attr];
   var obj = {type: prop.type};
-  obj.message = schema.properties[attr].message || messages[obj.type];
+  obj.messages = schema.properties[attr].messages || {};
+  obj.message =  obj.messages.type || messages[obj.type];
   if (prop.length) {
-    if (typeof prop.length === 'object') {
-      //obj.min = obj.length.tooShort || (messages.length ? messages.length.tooShort : "");
-      //obj.max = obj.length.tooLong || (messages.length ? messages.length.tooLong : "");
-      obj.min = prop.length.minimum;
-      obj.max = prop.length.maximum;
-    }
-    else {
-      obj.len = prop.length;
-    }
-
+    obj.len = prop.length;
   }
+  if (prop.minimum || prop.maximum) {
+      obj.min = prop.minimum;
+      obj.max = prop.maximum;
+  }
+
   var msg;
   switch (prop.type) {
     case "enum":
@@ -8711,8 +8756,7 @@ var publicHelpers = {
 
 module.exports = Model = (function () {
 
-  function Model(args) {
-    args = args || {};
+  function Model() {
     throw new Error("Cannot instantiate this class");
   }
 
@@ -8722,10 +8766,13 @@ module.exports = Model = (function () {
 
   Model.init = init;
   Model.instantiate = instantiate;
+  Model.addMessages = addMessages;
+  Model.getMessages = getMessages;
+  Model.setLocale = setLocale;
   Model.getSchema = getSchema;
 
   Model.prototype.create     = create;
-  Model.prototype.get        = get;
+  Model.prototype.load        = load;
   Model.prototype.update     = update;
   Model.prototype.destroy    = destroy;
   Model.prototype.isValid    = isValid;
@@ -8748,19 +8795,19 @@ function init(ref, schema) {
     return schema[key];
   };
 
-
-  //extend(true, ref.prototype, Model.prototype);
   ref.prototype = Object.create(Model.prototype, {
     constructor: {
       value: ref,
     }
   });
   ref.prototype.super_ = Model;
+  ref.get = get;
 
 }
 
-function instantiate(_this, args) {
-  initialize.call(_this, args);
+function instantiate(_this, args, options) {
+  options = extend(true, options, _this.constructor.schema);
+  initialize.call(_this, args, options);
 }
 
 var accessFunctions = {
@@ -8787,15 +8834,15 @@ function initialize(args, schema) {
     this[attr] = data[attr];
   }
   schema.schemaValidation = schemaValidation;
+  if (!schema.validators || schema.validators.constructor !== Array) {
+    schema.validators = [];
+  }
   schema.validators = [ new Validator({validate : schema.schemaValidation}) ];
-  if (schema.validatorSchema)
-    schema.validators = schema.validators.concat(new Validator({validate: schema.validatorSchema}));
 
-  if (data.validators && data.validators.constructor === Array)
-    schema.validators = schema.validators.concat(data.validators);
   this.constructor.prototype.access = access;
   var DefaultRepository = ref.repository || Model.repository || Repository;
-  schema.repository = data.repository || schema.repository ||new DefaultRepository();
+  schema.repository = schema.repository ||new DefaultRepository();
+  return this;
 }
 
 function create(callback) {
@@ -8814,15 +8861,46 @@ function create(callback) {
 }
 
 function get() {
-  var _this = this;
-  var repository = this.access('repository');
-  var callback = arguments.length > 1 ? arguments[1] : arguments[0];
-  repository.get.call(this, arguments.length > 1 ? arguments[0] : null, function (err, data) {
+  var args = [];
+  for (var i = 0; i < arguments.length; i++) {
+    args.push(arguments[i]);
+  }
+  var Ref = this;
+  var DefaultRepository = this.repository || Model.repository || Repository;
+  var repository = args[0].repository ||new DefaultRepository();
+
+  // last argument is the callback function.
+  var callback = args.pop();
+  repository.get(args.length > 1 ? args[0] : null, function (err, data) {
     if (err) {
       if (typeof callback === 'function') callback(err);
       return;
     }
-    if (data && data.constructor !== Array) {
+    if (data && data.constructor === Array) {
+      if (!Ref.schema.notInstantiate) {
+        for(var i in data) {
+          data[i].repository = repository;
+          data[i] = new Ref(data[i]);
+        }
+      }
+    } else
+    {
+        throw new Error("Response should be an Array");
+    }
+    if (typeof callback === 'function') callback(err, data);
+  });
+}
+
+function load() {
+  var _this = this;
+  var repository = this.access('repository');
+  var callback = arguments.length > 1 ? arguments[1] : arguments[0];
+  repository.load.call(this, arguments.length > 1 ? arguments[0] : null, function (err, data) {
+    if (err) {
+      if (typeof callback === 'function') callback(err);
+      return;
+    }
+    if (!_this.constructor.schema.notInstantiate) {
       initialize.call(_this, data, _this.access('privates'));
     }
     if (typeof callback === 'function') callback(err, data);
@@ -8838,7 +8916,7 @@ function update(callback) {
       return;
     }
     repository.update.call(_this, function (err, data) {
-      if (data && data.constructor !== Array) {
+      if (!_this.constructor.schema.notInstantiate)  {
         initialize.call(_this, data, _this.access('privates'));
       }
       callback(err, data);
@@ -8882,6 +8960,20 @@ function isValid(optionalValidators, callback) {
   Validator.validate(this, validators, callback);
 }
 
+function setLocale(locale) {
+  this.locale = locale;
+  Validator.setLocale(this.locale);
+}
+
+function addMessages(locale, messages) {
+  messages = extend(true, Validator.getMessages(), messages);
+  Validator.addMessages(locale, messages);
+}
+
+function getMessages(locale) {
+  return Validator.getMessages(locale);
+}
+
 },{"./helpers/db-helper.js":37,"./helpers/property-helper.js":38,"./helpers/swagger-helper.js":39,"./helpers/validator-helper.js":40,"./repository.js":42,"./validator":44,"extend":31,"util":35}],42:[function(require,module,exports){
 var Repository;
 module.exports = Repository = (function () {
@@ -8890,6 +8982,7 @@ module.exports = Repository = (function () {
 
     Repository.prototype.create = create;
     Repository.prototype.get = get;
+    Repository.prototype.load = load;
     Repository.prototype.update = update;
     Repository.prototype.destroy = destroy;
   }
@@ -8906,15 +8999,18 @@ function create(callback) {
   if (typeof callback === 'function') callback(null, this);
 }
 
-function get(args, callback) {
+function load(args, callback) {
   args = args || {};
   var data = args.data || {};
   if (args.id) {
     data = datas[args.id];
-  } else {
-    data = [];
-    for (var i in datas) data.push(datas[i]);
   }
+  callback(null, data);
+}
+
+function get(args, callback) {
+  var data = [];
+  for (var i in datas) data.push(JSON.parse(JSON.stringify(datas[i])));
   callback(null, data);
 }
 
@@ -8947,24 +9043,51 @@ module.exports = (function() {
 var Validator;
 var ValidationError = require('./validation-error.js');
 var schema = require('async-validate');
-//var ValidationError = schema.error;
 var validateOptions = {first : true, single: true};
 var util = require ('util');
 var async = require('async');
 
+var _messages = {
+  'en': schema.messages.clone()
+};
+var _locale = 'en';
 
 module.exports = Validator = (function () {
+
+
+
 
   function Validator(args) {
     args = args || {};
     this.validate = args.validate;
   }
+
   Validator.validate = validate;
   Validator.prototype.isValid = isValid;
+  Validator.getMessages = getMessages;
+  Validator.addMessages = addMessages;
+  Validator.setLocale = setLocale;
 
   return Validator;
 
 })();
+
+function setLocale(locale) {
+  _locale = locale;
+}
+
+function getLocale() {
+  return _locale;
+}
+
+function getMessages(locale) {
+  var cloned = JSON.parse(JSON.stringify(_messages[locale || getLocale()]));
+  return cloned;
+}
+
+function addMessages(locale, messages) {
+  _messages[locale] = messages;
+}
 
 function isValid(model, callback) {
   if (typeof this.validate === 'function') {
@@ -8981,6 +9104,7 @@ function isValid(model, callback) {
   }
   else {
     var validator = new schema(this.validate);
+    validateOptions.messages = getMessages();
     validator.validate(model, validateOptions, callback);
   }
 }
