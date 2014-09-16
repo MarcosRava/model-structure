@@ -1,6 +1,6 @@
 #Model Structure
 
-`model-structure` helps you to create Models based on a Schema's Object. :godmode:
+`model-structure` helps you to create Models based on a Schema's Object.
 
 It can:
 
