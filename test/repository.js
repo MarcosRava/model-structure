@@ -20,13 +20,13 @@ describe('Repository', function(){
       expect(customer.access('repository').constructor.name).to.be('ArgumentRepository');
     });
     it('should use Customer Repository', function() {
-      Customer.repository = customerRepository;
+      Customer.repository = new customerRepository();
       var customer = new Customer();
       expect(customer.access('repository').constructor.name).to.be('CustomerRepository');
       delete Customer.repository;
     });
     it('should use Model Repository', function() {
-      Model.repository = modelRepository;
+      Model.repository = new modelRepository();
       var customer = new Customer();
       expect(customer.access('repository').constructor.name).to.be('ModelRepository');
       delete Model.repository;

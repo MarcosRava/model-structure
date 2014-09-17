@@ -99,8 +99,7 @@ function initialize(args, schema) {
   schema.validators = [ new Validator({validate : schema.schemaValidation}) ];
 
   this.constructor.prototype.access = access;
-  var DefaultRepository = ref.repository || Model.repository || Repository;
-  schema.repository = schema.repository ||new DefaultRepository();
+  schema.repository = schema.repository || ref.repository || Model.repository || new Repository();
   return this;
 }
 
@@ -125,8 +124,7 @@ function get() {
     args.push(arguments[i]);
   }
   var Ref = this;
-  var DefaultRepository = this.repository || Model.repository || Repository;
-  var repository = args[0].repository ||new DefaultRepository();
+  var repository = args[0].repository || Ref.repository || Model.repository || new Repository();
 
   // last argument is the callback function.
   var callback = args.pop();
