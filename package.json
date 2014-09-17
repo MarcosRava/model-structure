@@ -16,7 +16,7 @@
     }
   ],
   "name": "model-structure",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "repository": {
     "url": "https://github.com/MarcosRava/model-structure/"
   },
@@ -36,7 +36,8 @@
     "async-validate": "^0.1.20",
     "db-migrate": "^0.7.1",
     "extend": "^1.2.1",
-    "moment": "^2.6.0"
+    "moment": "^2.6.0",
+    "q": "^1.0.1"
   },
   "scripts": {
     "test": "mocha",

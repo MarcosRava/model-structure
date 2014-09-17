@@ -7,6 +7,7 @@ var dbHelper         = require('./helpers/db-helper.js');
 var extend           = require('extend');
 var util           = require('util');
 var Model;
+var Q = require('q');
 
 var publicHelpers = {
   swagger  : swaggerHelper.getSwagger,
@@ -104,18 +105,40 @@ function initialize(args, schema) {
 }
 
 function create(callback) {
+  callback = callback || function(){};
   var repository = this.access('repository');
   var _this = this;
-  this.isValid(function (err) {
-    if (err) {
-      if (typeof callback === 'function') callback(err);
-      return;
-    }
-    repository.create.call(_this, function (err, data) {
-      initialize.call(_this, data, _this.access('privates'));
-      callback(err, data);
+  var validationPromise = this.isValid();
+  var createPromise;
+  if (repository.create.length === 3) {
+    var deferred = Q.defer();
+    repository.create.call(_this, deferred.resolve, deferred.reject, deferred.notify);
+    createPromise = deferred.promise;
+  } else {
+    createPromise = Q.Promise(function(resolve, reject, notify) {
+      repository.create.call(_this, function (err, data) {
+        if(err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      }
+     );
     });
-  });
+  }
+ return Q.all([validationPromise, createPromise])
+  .fail(function (err) {
+    callback(err);
+    throw err;
+  })
+ .then(function (result) {
+   if(!result || !result[1]) return;
+    if (!_this.constructor.schema.notInstantiate) {
+      result[1] = initialize.call(_this,  result[1], _this.access('privates'));
+    }
+    callback(null, result[1]);
+    return result[1];
+ });
 }
 
 function get() {
@@ -148,73 +171,156 @@ function get() {
   });
 }
 
-function load() {
-  var _this = this;
-  var repository = this.access('repository');
-  var callback = arguments.length > 1 ? arguments[1] : arguments[0];
-  repository.load.call(this, arguments.length > 1 ? arguments[0] : null, function (err, data) {
+function geta() {
+  var args = [];
+  for (var i = 0; i < arguments.length; i++) {
+    args.push(arguments[i]);
+  }
+  var Ref = this;
+  var repository = args[0].repository || Ref.repository || Model.repository || new Repository();
+
+  // last argument is the callback function.
+  var callback = args.pop();
+  repository.get(args.length > 1 ? args[0] : null, function (err, data) {
     if (err) {
       if (typeof callback === 'function') callback(err);
       return;
     }
-    if (!_this.constructor.schema.notInstantiate) {
-      initialize.call(_this, data, _this.access('privates'));
+    if (data && data.constructor === Array) {
+      if (!Ref.schema.notInstantiate) {
+        for(var i in data) {
+          data[i].repository = repository;
+          data[i] = new Ref(data[i]);
+        }
+      }
+    } else
+    {
+        throw new Error("Response should be an Array");
     }
     if (typeof callback === 'function') callback(err, data);
   });
 }
 
+function load() {
+  var _this = this;
+  var repository = this.access('repository');
+  var callback = arguments.length > 1 ? arguments[1] : arguments[0] || function() {};
+  var ref = (arguments.length > 0 && arguments[0] !== callback) ? arguments[0] : this;
+  var _args = arguments.length > 1 ? arguments[0] : _this;
+
+  var deferred = Q.defer();
+  var loadPromise = deferred.promise;
+  if (repository.create.length === 3) {
+    repository.load.call(ref, deferred.resolve, deferred.reject, deferred.notify);
+  } else {
+    loadPromise = Q.Promise(function(resolve, reject, notify) {
+      repository.load.call(_this, _args, function (err, data) {
+        if(err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      });
+    });
+  }
+  return loadPromise.fail(function(err) {
+    callback(err);
+    throw err;
+  }).then(function (data) {
+    if (!_this.constructor.schema.notInstantiate) {
+      data = initialize.call(_this,  data, _this.access('privates'));
+    }
+    callback(null, data);
+    return data;
+ });
+}
+
 function update(callback) {
+callback = callback || function(){};
   var repository = this.access('repository');
   var _this = this;
-  this.isValid(function (err) {
-    if (err) {
-      if (typeof callback === 'function') callback(err);
-      return;
-    }
-    repository.update.call(_this, function (err, data) {
-      if (!_this.constructor.schema.notInstantiate)  {
-        initialize.call(_this, data, _this.access('privates'));
+  var validationPromise = this.isValid();
+  var updatePromise;
+  if (repository.update.length === 3) {
+    var deferred = Q.defer();
+    repository.update.call(_this, deferred.resolve, deferred.reject, deferred.notify);
+    updatePromise = deferred.promise;
+  } else {
+    updatePromise = Q.Promise(function(resolve, reject, notify) {
+      repository.update.call(_this, function (err, data) {
+        if(err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
       }
-      callback(err, data);
+     );
     });
-  });
+  }
+ return Q.all([validationPromise, updatePromise])
+  .fail(function (err) {
+    callback(err);
+    throw err;
+  })
+ .then(function (result) {
+   if(!result || !result[1]) return;
+    if (!_this.constructor.schema.notInstantiate) {
+      result[1] = initialize.call(_this,  result[1], _this.access('privates'));
+    }
+    callback(null, result[1]);
+    return result[1];
+ });
 }
 
 function destroy(callback) {
+  callback = callback || function(){};
   var _this = this;
   var repository = this.access('repository');
-  repository.destroy.call(this, function (err) {
-    if (err) throw err;
-    delete _this._id;
+  var deletePromise;
+  if (repository.update.length === 3) {
+    var deferred = Q.defer();
+    repository.destroy.call(_this, deferred.resolve, deferred.reject, deferred.notify);
+    deletePromise = deferred.promise;
+  } else {
+    deletePromise = Q.Promise(function(resolve, reject, notify) {
+      repository.destroy.call(_this, function (err, data) {
+        if(err) {
+          reject(err);
+        } else {
+          resolve(data);
+        }
+      }
+     );
+    });
+  }
+  return deletePromise.fail(function(err) {
     callback(err);
-  });
+    throw err;
+  }).then(function (data) {
+    if (!_this.constructor.schema.notInstantiate) {
+      data = initialize.call(_this,  data, _this.access('privates'));
+    }
+    callback(null, data);
+    return data;
+ });
 }
 
 function isValid(optionalValidators, callback) {
-
-  // retrieve arguments as array
-  var args = [];
-  for (var i = 0; i < arguments.length; i++) {
-    args.push(arguments[i]);
-  }
-
-  // last argument is the callback function.
-  callback = args.pop();
-
-  if (typeof callback !== 'function') {
-    throw new Error("Must pass a callback function");
-  }
 
   // retrieve default validators
   var validators = this.access('validators');
 
   // use optionalValidators as validators when optionalValidators are passed
-  if (args.length > 0) {
-    validators = args[0];
+  if (arguments.length > 0) {
+    if (optionalValidators.constructor === Array) {
+      validators = optionalValidators;
+    } else if (typeof optionalValidators === 'function') {
+      callback = optionalValidators;
+    }
+    callback = callback || function() {};
   }
 
-  Validator.validate(this, validators, callback);
+  return Validator.validate(this, validators, callback);
 }
 
 function setLocale(locale) {

@@ -4,6 +4,7 @@ var schema = require('async-validate');
 var validateOptions = {first : true, single: true};
 var util = require ('util');
 var async = require('async');
+var Q = require('q');
 
 var _messages = {
   'en': schema.messages.clone()
@@ -11,9 +12,6 @@ var _messages = {
 var _locale = 'en';
 
 module.exports = Validator = (function () {
-
-
-
 
   function Validator(args) {
     args = args || {};
@@ -48,12 +46,23 @@ function addMessages(locale, messages) {
 }
 
 function isValid(model, callback) {
+  callback = callback || function() {};
+  var deferred = Q.defer();
+  var promise = deferred.promise;
   if (typeof this.validate === 'function') {
     if (this.validate.length === 1)
       this.validate.call(model, function (err, fields) {
-        err = checkError(err);
+        if(err) {
+          err = checkError(err);
+          deferred.reject(err, fields);
+        } else {
+          deferred.resolve(null);
+        }
         callback(err, fields);
       });
+    else if (this.validate.length === 3) {
+      this.validate.call(model, deferred.resolve, reject, deferred.notify);
+    }
     else {
       var err = this.validate.call(model);
       err = checkError(err);
@@ -63,8 +72,21 @@ function isValid(model, callback) {
   else {
     var validator = new schema(this.validate);
     validateOptions.messages = getMessages();
-    validator.validate(model, validateOptions, callback);
+    promise = Q.Promise(function(resolve, reject, notify) {
+      validator.validate(model, validateOptions, function(err, fields) {
+        if(err) {
+          reject(err);
+        } else {
+          resolve(null);
+        }
+      });
+    });
   }
+  function reject(err) {
+    err = checkError(err);
+    deferred.reject (err);
+  }
+  return promise;
 }
 
 function checkError(err) {
@@ -73,32 +95,17 @@ function checkError(err) {
 }
 
 function validate(model, validators, callback) {
+  callback = callback || function() {};
+  var arr =[];
+  for(var i in validators) {
+    var _validator = validators[i];
+    if (!_validator instanceof Validator) throw new Error("Validator not valid", _validator);
+    arr.push( _validator.isValid(model));
 
-  if (validators && validators.length > 0) {
-    var length = validators.length;
-    _isValid(model, 0);
-  } else {
-    callback(null);
   }
-
-  function _isValid(data, i) {
-    var validator = validators[i];
-
-    if (!validator instanceof Validator) throw new Error("Validator not valid", validator);
-
-    if (i >= length) {
-      callback(null);
-      return;
-    }
-
-    validator.isValid(data, function (err, fields) {
-      if (err) {
-        callback(err, fields);
-      } else {
-        _isValid(data, i + 1);
-      }
-    });
-  }
+  Q.all(arr)
+  .nodeify(callback);
+  return Q.all(arr);
 }
 
 function arrayModel(rule, value, callback, source, options) {

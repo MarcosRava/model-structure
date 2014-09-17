@@ -1,5 +1,8 @@
 var expect = require('expect.js');
 var Customer = require('./fixtures/models/customer.js');
+var model = require('../index.js');
+var Model = model.Model;
+var Validator = model.Validator;
 
 describe('Model', function () {
 
@@ -11,21 +14,24 @@ describe('Model', function () {
   });
 
   describe('.isValid', function () {
-
-    it('should throw exception when the callback function is not passed', function (done) {
-      var customer = this.getCustomerFactory();
-      expect(customer.isValid).to.throwException(function (e) {
-        expect(e).to.be.a(Error);
-        expect(e.message).to.be('Must pass a callback function');
-        done();
-      });
-    });
+//
+//    it('should throw exception when the callback function is not passed', function (done) {
+//      var customer = this.getCustomerFactory();
+//      expect(customer.isValid).to.throwException(function (e) {
+//        expect(e).to.be.a(Error);
+//        expect(e.message).to.be('Must pass a callback function');
+//        done();
+//      });
+//    });
 
     it('should use optional validations and ignore default validations', function (done) {
       // default validations has a minimum validation setted as 3 for the name attribute
       var customer = this.getCustomerFactory({name: 'a'});
       var customValidations = {name: {type: 'string'}};
-      customer.isValid(customValidations, function (err) {
+      var validators = [];
+      var validator = new Validator({validate: customValidations});
+      validators.push(validator);
+      customer.isValid(validators, function (err) {
         expect(err).to.be(null);
         done();
       });
