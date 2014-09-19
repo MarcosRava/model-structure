@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/MarcosRava/model-structure.svg)](https://travis-ci.org/MarcosRava/model-structure)
+
 #Model Structure
 
 `model-structure` helps you to create Models based on a Schema's Object.
