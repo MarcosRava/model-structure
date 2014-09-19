@@ -48,6 +48,5 @@ function update(resolve, reject, notify) {
 
 function destroy(resolve, reject, notify) {
   delete datas[this.id];
-  console.log(this, 'after')
   resolve(this);
 }
