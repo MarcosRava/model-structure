@@ -125,7 +125,7 @@ function defineList(ListModel, attr) {
   Object.defineProperty(this, attr, getSet);
 }
 
-function defineNested(ListModel, attr) {
+function defineNested(Ref, attr) {
   var value = [];
   var getSet = {
     get: function () {
@@ -133,7 +133,7 @@ function defineNested(ListModel, attr) {
     },
     set: function (val) {
       if (typeof val === 'object') {
-        value = new ListModel(val, this);
+        value = new Ref(val);
       } else {
         value = val;
       }
