@@ -6,8 +6,8 @@ var Customer = require('../fixtures/models/customer.js');
 describe('Validation', function () {
 
   before(function () {
-    this.getCustomerFactory = function getCustomerFactory(args) {
-      return new Customer(args);
+    this.getCustomerFactory = function getCustomerFactory(args, opts) {
+      return new Customer(args, opts);
     };
 
     this.error = {message: "Name field must be first letter in uppercase", field: 'name'};
@@ -109,6 +109,30 @@ describe('Validation', function () {
         validators.push(validator);
         var promise = Validator.validate(customer, validators);
         promise.fail(callback).then(callback);
+
+        function callback(err) {
+          expect(err[0].field).to.be('age');
+          expect(err[0].message).to.contain('age cannot be less than 4');
+          done();
+        }
+      });
+
+      it('should trigger validations parameter from Validator using async-validator sintaxe in constructor', function (done) {
+        var validators = [];
+
+        var asyncSchema = {
+            "age" : {
+              "type": "integer",
+              "min" : 4,
+              required: true
+            }
+        };
+
+        var validator = new Validator({validate: asyncSchema});
+        validators.push(validator);
+        var customer = this.getCustomerFactory({name: 'sanji', age: 2}, {validators:validators});
+        var promise = customer.isValid();
+        promise.fail(callback);
 
         function callback(err) {
           expect(err[0].field).to.be('age');

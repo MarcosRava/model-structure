@@ -97,7 +97,7 @@ function initialize(args, schema) {
   if (!schema.validators || schema.validators.constructor !== Array) {
     schema.validators = [];
   }
-  schema.validators = [ new Validator({validate : schema.schemaValidation}) ];
+  schema.validators =  schema.validators.concat([ new Validator({validate : schema.schemaValidation}) ]);
 
   this.constructor.prototype.access = access;
   schema.repository = schema.repository || ref.repository || Model.repository || new Repository();
