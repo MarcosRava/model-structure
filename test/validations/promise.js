@@ -67,7 +67,7 @@ describe('Validation', function () {
         }
       });
 
-      it('should trigger validations parameter form Validator', function (done) {
+      it('should trigger validations parameter from Validator', function (done) {
         var customer = this.getCustomerFactory({name: 'sanji'});
         var validators = [];
         var validator = new Validator({validate: firstLetterUpperCase});
@@ -88,6 +88,31 @@ describe('Validation', function () {
         function callback(err) {
           expect(err[0].field).to.be(error.field);
           expect(err[0].message).to.contain(error.message);
+          done();
+        }
+      });
+
+      it('should trigger validations parameter from Validator using async-validator sintaxe', function (done) {
+        var customer = this.getCustomerFactory({name: 'sanji', age: 2});
+        var validators = [];
+
+        var asyncSchema = {
+            "age" : {
+              "type": "integer",
+              "min" : 4,
+              required: true
+            }
+        };
+
+        var validator = new Validator({validate: asyncSchema});
+
+        validators.push(validator);
+        var promise = Validator.validate(customer, validators);
+        promise.fail(callback).then(callback);
+
+        function callback(err) {
+          expect(err[0].field).to.be('age');
+          expect(err[0].message).to.contain('age cannot be less than 4');
           done();
         }
       });

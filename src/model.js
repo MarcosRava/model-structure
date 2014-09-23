@@ -171,36 +171,6 @@ function get() {
   });
 }
 
-function geta() {
-  var args = [];
-  for (var i = 0; i < arguments.length; i++) {
-    args.push(arguments[i]);
-  }
-  var Ref = this;
-  var repository = args[0].repository || Ref.repository || Model.repository || new Repository();
-
-  // last argument is the callback function.
-  var callback = args.pop();
-  repository.get(args.length > 1 ? args[0] : null, function (err, data) {
-    if (err) {
-      if (typeof callback === 'function') callback(err);
-      return;
-    }
-    if (data && data.constructor === Array) {
-      if (!Ref.schema.notInstantiate) {
-        for(var i in data) {
-          data[i].repository = repository;
-          data[i] = new Ref(data[i]);
-        }
-      }
-    } else
-    {
-        throw new Error("Response should be an Array");
-    }
-    if (typeof callback === 'function') callback(err, data);
-  });
-}
-
 function load() {
   var _this = this;
   var repository = this.access('repository');
@@ -210,7 +180,7 @@ function load() {
 
   var deferred = Q.defer();
   var loadPromise = deferred.promise;
-  if (repository.create.length === 3) {
+  if (repository.load.length === 3) {
     repository.load.call(ref, deferred.resolve, deferred.reject, deferred.notify);
   } else {
     loadPromise = Q.Promise(function(resolve, reject, notify) {
