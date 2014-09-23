@@ -93,11 +93,13 @@ function initialize(args, schema) {
     schemaValidation[attr] = validationHelper.getValidation.call(this, schema, attr);
     this[attr] = data[attr];
   }
-  schema.schemaValidation = schemaValidation;
   if (!schema.validators || schema.validators.constructor !== Array) {
     schema.validators = [];
   }
-  schema.validators =  schema.validators.concat([ new Validator({validate : schema.schemaValidation}) ]);
+  if (!schema.schemaValidation) {
+    schema.schemaValidation = schemaValidation;
+    schema.validators =  schema.validators.concat([ new Validator({validate : schema.schemaValidation}) ]);
+  }
 
   this.constructor.prototype.access = access;
   schema.repository = schema.repository || ref.repository || Model.repository || new Repository();
