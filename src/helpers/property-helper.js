@@ -115,7 +115,7 @@ function defineList(ListModel, attr) {
 
       value = [];
       for (var i in val) {
-        value.push(new ListModel(val[i], this));
+        value.push(new ListModel(val[i]));
       }
     },
     enumerable: true
