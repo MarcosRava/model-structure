@@ -16,7 +16,7 @@ describe('Validation', function () {
     describe('when nested object is invalid', function () {
       it('should return error when address is not an object', function (done) {
         var address = 'not an object';
-        var customer = this.getCustomerFactory({address: address});
+        var customer = this.getCustomerFactory({address: address, email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err[0].field).to.be('address');
           expect(err[0].message).to.contain(errorExpectedMessage);
@@ -30,7 +30,7 @@ describe('Validation', function () {
       });
       it('should have only schema properties in nested array', function () {
         var address = {addressName: 'Street X', number: 'X100', zipCode: '010400', q:1};
-        var customer = this.getCustomerFactory({address: address});
+        var customer = this.getCustomerFactory({address: address, email:'foo@dumb.com'});
         expect(customer.address.q).to.not.be(1);
       });
     });
@@ -38,7 +38,7 @@ describe('Validation', function () {
     describe('when nested object is valid', function () {
       it('should validate fields in nested object', function (done) {
         var address = {addressName: 'Street X', number: 'X100', zipCode: '010400'};
-        var customer = this.getCustomerFactory({address: address});
+        var customer = this.getCustomerFactory({address: address, email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err).to.not.be(null);
           expect(err[0].field).to.be('address.number');
@@ -48,7 +48,7 @@ describe('Validation', function () {
       it('should validate fields in nested objects in array', function (done) {
         var phone1 = {number: 'X100', areaCode: 11};
         var phone2 = {number: 995952478, areaCode: 11};
-        var customer = this.getCustomerFactory({phones:[phone2, phone1]});
+        var customer = this.getCustomerFactory({phones:[phone2, phone1], email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err).to.not.be(null);
           expect(err[0].field).to.be('phones[1].number');

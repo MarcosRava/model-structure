@@ -19,6 +19,7 @@ function getValidation(schema, attr) {
   }
 
   var msg;
+  obj.required = prop.required || false;
   switch (prop.type) {
     case "enum":
       if (prop.values.ref.constructor === Array) {
@@ -43,7 +44,6 @@ function getValidation(schema, attr) {
       obj.pattern = patterns.EMAIL;
       break;
     case "integer":
-      obj.required = false;
       break;
     case "datetime":
       obj.type = 'date';

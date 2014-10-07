@@ -16,7 +16,7 @@ describe('Validation', function () {
   describe('array', function () {
     describe('when array is invalid', function () {
       it('should return error when array is not a array', function (done) {
-        var customer = this.getCustomerFactory({tags: 'not array'});
+        var customer = this.getCustomerFactory({tags: 'not array', email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err[0].field).to.be('tags');
           expect(err[0].message).to.be(errorExpectedMessage);
@@ -27,7 +27,7 @@ describe('Validation', function () {
 
     describe('when array is valid', function () {
       it('should not return error when array is an array with string', function (done) {
-        var customer = this.getCustomerFactory({tags: ['rico', 'com', 'vc']});
+        var customer = this.getCustomerFactory({tags: ['rico', 'com', 'vc'], email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err).to.be(null);
           done();
@@ -35,7 +35,7 @@ describe('Validation', function () {
       });
 
       it('should not return error when array is an array with integers', function (done) {
-        var customer = this.getCustomerFactory({tags: [1, 2, 3]});
+        var customer = this.getCustomerFactory({tags: [1, 2, 3], email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err).to.be(null);
           done();
@@ -43,7 +43,7 @@ describe('Validation', function () {
       });
 
       it('should return Model instances', function (done) {
-        var customer = this.getCustomerFactory({name:"Marcos", hdhd:56756});
+        var customer = this.getCustomerFactory({name:"Marcos", hdhd:56756, email:'foo@dumb.com'});
         customer.create(function (err) {
           Customer.get(function(err, customers) {
             expect(err).to.be(null);

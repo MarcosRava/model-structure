@@ -16,7 +16,7 @@ describe('Validation', function () {
   describe('float', function () {
     describe('when float is invalid', function () {
       it('should return error when float is not an float', function (done) {
-        var customer = this.getCustomerFactory({income: 'not Income'});
+        var customer = this.getCustomerFactory({income: 'not Income', email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err[0].field).to.be('income');
           expect(err[0].message).to.contain(errorExpectedMessage);
@@ -24,7 +24,7 @@ describe('Validation', function () {
         });
       });
       it('should return error when float is a float in a string', function (done) {
-        var customer = this.getCustomerFactory({income: '10.5'});
+        var customer = this.getCustomerFactory({income: '10.5', email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err[0].field).to.be('income');
           expect(err[0].message).to.contain(errorExpectedMessage);
@@ -35,7 +35,7 @@ describe('Validation', function () {
 
     describe('when float is valid', function () {
       it('should not return error when float is an float', function (done) {
-        var customer = this.getCustomerFactory({income: 10.5});
+        var customer = this.getCustomerFactory({income: 10.5, email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err).to.be(null);
           done();
@@ -43,7 +43,7 @@ describe('Validation', function () {
       });
 
       it('should not return error when float is an integer', function (done) {
-        var customer = this.getCustomerFactory({income: 10});
+        var customer = this.getCustomerFactory({income: 10, email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err).to.be(null);
           done();

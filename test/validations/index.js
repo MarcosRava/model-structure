@@ -49,7 +49,7 @@ describe('Validation', function () {
         }
       }
       validators.push(validator);
-      var customer = this.getCustomerFactory({name: 'Sanji'}, {validators:validators});
+      var customer = this.getCustomerFactory({name: 'Sanji', email:'foo@dumb.com'}, {validators:validators});
       customer.create()
       .then(function(customer) {
         customer.name = 'sanji';
@@ -64,7 +64,7 @@ describe('Validation', function () {
     });
 
     it('should trigger validations parameter form Validator', function (done) {
-      var customer = this.getCustomerFactory({name: 'sanji'});
+      var customer = this.getCustomerFactory({name: 'sanji', email:'foo@dumb.com'});
       var validators = [];
       var validator = new Validator({validate: firstLetterUpperCase});
       var error = this.error;

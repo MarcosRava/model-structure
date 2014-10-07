@@ -17,7 +17,7 @@ describe('Validation', function () {
     describe('when not error', function () {
 
       it('should trigger validations parameter form Validator', function (done) {
-        var customer = this.getCustomerFactory({name: 'Sanji'});
+        var customer = this.getCustomerFactory({name: 'Sanji', email:'foo@dumb.com'});
         var validators = [];
         var validator = new Validator({validate: firstLetterUpperCase});
         var error = this.error;
@@ -43,7 +43,7 @@ describe('Validation', function () {
     describe('when has error', function () {
 
       it('should trigger validations parameter from Model instance', function (done) {
-        var customer = this.getCustomerFactory({name: 'sanji'});
+        var customer = this.getCustomerFactory({name: 'sanji', email:'foo@dumb.com'});
         var validators = [];
         var validator = new Validator({validate: firstLetterUpperCase});
         var error = this.error;
@@ -68,7 +68,7 @@ describe('Validation', function () {
       });
 
       it('should trigger validations parameter from Validator', function (done) {
-        var customer = this.getCustomerFactory({name: 'sanji'});
+        var customer = this.getCustomerFactory({name: 'sanji', email:'foo@dumb.com'});
         var validators = [];
         var validator = new Validator({validate: firstLetterUpperCase});
         var error = this.error;
@@ -93,7 +93,7 @@ describe('Validation', function () {
       });
 
       it('should trigger validations parameter from Validator using async-validator sintaxe', function (done) {
-        var customer = this.getCustomerFactory({name: 'sanji', age: 2});
+        var customer = this.getCustomerFactory({name: 'sanji', age: 2, email:'foo@dumb.com'});
         var validators = [];
 
         var asyncSchema = {

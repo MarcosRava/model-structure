@@ -23,7 +23,7 @@ describe('Validation', function () {
         };
         var validator = new Validator({validate: schema});
         validators.push(validator);
-        var customer = this.getCustomerFactory({name:undefined});
+        var customer = this.getCustomerFactory({name:undefined, email:'foo@dumb.com'});
         customer.isValid(validators, function (err) {
           expect(err[0].field).to.be('name');
           done();
@@ -39,7 +39,7 @@ describe('Validation', function () {
         };
         var validator = new Validator({validate: schema});
         validators.push(validator);
-        var customer = this.getCustomerFactory({name:"Marcos"}, {validators:validators});
+        var customer = this.getCustomerFactory({name:"Marcos", email:'foo@dumb.com'}, {validators:validators});
         customer.isValid(function (err) {
           expect(err).to.be(null);
           done();

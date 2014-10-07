@@ -25,7 +25,7 @@ describe('Validation', function () {
       });
 
       it('should return error when string is an array', function (done) {
-        var customer = this.getCustomerFactory({name: []});
+        var customer = this.getCustomerFactory({name: [], email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err[0].field).to.be('name');
           expect(err[0].message).to.contain(errorExpectedMessage);
@@ -34,7 +34,7 @@ describe('Validation', function () {
       });
 
       it('should return error when string is a boolean', function (done) {
-        var customer = this.getCustomerFactory({name: true});
+        var customer = this.getCustomerFactory({name: true, email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err[0].field).to.be('name');
           expect(err[0].message).to.contain(errorExpectedMessage);
@@ -43,7 +43,7 @@ describe('Validation', function () {
       });
 
       it('should return error when string is an object', function (done) {
-        var customer = this.getCustomerFactory({name: {} });
+        var customer = this.getCustomerFactory({name: {} , email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err[0].field).to.be('name');
           expect(err[0].message).to.contain(errorExpectedMessage);
@@ -52,7 +52,7 @@ describe('Validation', function () {
       });
 
       it('should return string minimum length error message', function (done) {
-        var customer = this.getCustomerFactory({name: 'aa'});
+        var customer = this.getCustomerFactory({name: 'aa', email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err[0].field).to.be('name');
           expect(err[0].message).to.contain(rangeErrorExpectedMessage);
@@ -61,7 +61,7 @@ describe('Validation', function () {
       });
 
       it('should return string maximum length error message', function (done) {
-        var customer = this.getCustomerFactory({name: (new Array(32).join('a')) });
+        var customer = this.getCustomerFactory({name: (new Array(32).join('a')) , email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err[0].field).to.be('name');
           expect(err[0].message).to.contain(rangeErrorExpectedMessage);
@@ -72,7 +72,7 @@ describe('Validation', function () {
     });
     describe('when string is valid', function () {
       it('should not return error when string is valid', function (done) {
-        var customer = this.getCustomerFactory({name: 'Valid string'});
+        var customer = this.getCustomerFactory({name: 'Valid string', email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err).to.be(null);
           done();
@@ -80,7 +80,7 @@ describe('Validation', function () {
       });
 
       it('should not return error when string has the minimum length', function (done) {
-        var customer = this.getCustomerFactory({name: '123'});
+        var customer = this.getCustomerFactory({name: '123', email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err).to.be(null);
           done();
@@ -88,7 +88,7 @@ describe('Validation', function () {
       });
 
       it('should not return error when string has the maximum length', function (done) {
-        var customer = this.getCustomerFactory({name: (new Array(31).join('a')) });
+        var customer = this.getCustomerFactory({name: (new Array(31).join('a')) , email:'foo@dumb.com'});
         customer.isValid(function (err) {
           expect(err).to.be(null);
           done();
