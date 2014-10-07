@@ -121,6 +121,15 @@ describe('Validation', function () {
         }
       });
 
+      it('should get an Array of Customers', function (done) {
+        var promise = Customer.get();
+        promise.done(callback);
+        function callback(data) {
+          expect(data).to.be.an(Array);
+          done();
+        }
+      });
+
       it('should update a Customer', function (done) {
         var customer = this.getCustomerFactory(null, {repository: new PromiseRepository()});
         var _this = this;
