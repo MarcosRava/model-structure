@@ -29,6 +29,7 @@ module.exports = Model = (function () {
   Model.getMessages = getMessages;
   Model.setLocale = setLocale;
   Model.getSchema = getSchema;
+  Model.prototype.toObject = toObject;
 
   Model.prototype.isValid    = isValid;
 
@@ -128,4 +129,18 @@ function addMessages(locale, messages) {
 
 function getMessages(locale) {
   return Validator.getMessages(locale);
+}
+
+// Returns an object containing just the model properties.
+function toObject() {
+  var newObject = {};
+  var _property;
+  var properties = Object.keys(this.access('privates').properties);
+
+  for (var i = 0, j = properties.length; i < j; i++) {
+     _property = properties[i];
+    newObject[_property] = this[_property];
+  }
+
+  return newObject;
 }

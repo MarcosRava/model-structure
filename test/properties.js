@@ -3,7 +3,7 @@ var Customer = require('./fixtures/models/customer.js');
 var customerSchema = Customer.schema;
 var customerData = require('./fixtures/data/customer/basic.json');
 
-describe('Properties', function(){
+describe('Properties', function () {
 
   before(function () {
     this.getCustomerFactory = function getCustomerFactory() {
@@ -11,8 +11,8 @@ describe('Properties', function(){
     };
   });
 
-  describe('The object properties must be a mirror of the schema', function(){
-    it('the object properties must be a mirror of the schema', function(){
+  describe('The object properties must be a mirror of the schema', function () {
+    it('the object properties must be a mirror of the schema', function () {
       var customer = this.getCustomerFactory();
       var keys = Object.keys(customer);
       var attr;
