@@ -17,10 +17,16 @@ describe('Validation', function () {
     describe('when not error', function () {
 
       it('should trigger validations parameter form Validator', function (done) {
-        var customer = this.getCustomerFactory({name: 'Sanji', email:'foo@dumb.com'});
-        var validators = [];
-        var validator = new Validator({validate: firstLetterUpperCase});
+        var customer = this.getCustomerFactory({name: 'Sanji', email: 'foo@dumb.com'});
+        var validators = [new Validator({validate: firstLetterUpperCase})];
         var error = this.error;
+        var promise = Validator.validate(customer, validators);
+
+        promise.done(callback);
+
+        function callback() {
+          done();
+        }
 
         function firstLetterUpperCase(done) {
           if (this.name[0].toUpperCase() === this.name[0]) {
@@ -29,34 +35,15 @@ describe('Validation', function () {
             done(error);
           }
         }
-        validators.push(validator);
-        var promise = Validator.validate(customer, validators);
-
-        promise.done(callback);
-
-        function callback() {
-          done();
-        }
       });
 
     });
     describe('when has error', function () {
 
       it('should trigger validations parameter from Model instance', function (done) {
-        var customer = this.getCustomerFactory({name: 'sanji', email:'foo@dumb.com'});
-        var validators = [];
-        var validator = new Validator({validate: firstLetterUpperCase});
+        var customer = this.getCustomerFactory({name: 'sanji', email: 'foo@dumb.com'});
+        var validators = [new Validator({validate: firstLetterUpperCase})];
         var error = this.error;
-
-        function firstLetterUpperCase(resolve, reject, notify) {
-          if (this.name[0].toUpperCase() === this.name[0]) {
-            resolve();
-          } else {
-            reject(error);
-          }
-        }
-
-        validators.push(validator);
         var promise = customer.isValid(validators);
         promise.fail(callback);
 
@@ -65,13 +52,6 @@ describe('Validation', function () {
           expect(err[0].message).to.contain(error.message);
           done();
         }
-      });
-
-      it('should trigger validations parameter from Validator', function (done) {
-        var customer = this.getCustomerFactory({name: 'sanji', email:'foo@dumb.com'});
-        var validators = [];
-        var validator = new Validator({validate: firstLetterUpperCase});
-        var error = this.error;
 
         function firstLetterUpperCase(resolve, reject, notify) {
           if (this.name[0].toUpperCase() === this.name[0]) {
@@ -80,8 +60,12 @@ describe('Validation', function () {
             reject(error);
           }
         }
+      });
 
-        validators.push(validator);
+      it('should trigger validations parameter from Validator', function (done) {
+        var customer = this.getCustomerFactory({name: 'sanji', email: 'foo@dumb.com'});
+        var validators = [new Validator({validate: firstLetterUpperCase})];
+        var error = this.error;
         var promise = Validator.validate(customer, validators);
         promise.fail(callback);
 
@@ -90,18 +74,26 @@ describe('Validation', function () {
           expect(err[0].message).to.contain(error.message);
           done();
         }
+
+        function firstLetterUpperCase(resolve, reject, notify) {
+          if (this.name[0].toUpperCase() === this.name[0]) {
+            resolve();
+          } else {
+            reject(error);
+          }
+        }
       });
 
       it('should trigger validations parameter from Validator using async-validator sintaxe', function (done) {
-        var customer = this.getCustomerFactory({name: 'sanji', age: 2, email:'foo@dumb.com'});
+        var customer = this.getCustomerFactory({name: 'sanji', age: 2, email: 'foo@dumb.com'});
         var validators = [];
 
         var asyncSchema = {
-            "age" : {
-              "type": "integer",
-              "min" : 4,
-              required: true
-            }
+          "age" : {
+            "type": "integer",
+            "min" : 4,
+            required: true
+          }
         };
 
         var validator = new Validator({validate: asyncSchema});
@@ -121,16 +113,16 @@ describe('Validation', function () {
         var validators = [];
 
         var asyncSchema = {
-            "age" : {
-              "type": "integer",
-              "min" : 4,
-              required: true
-            }
+          "age" : {
+            "type": "integer",
+            "min" : 4,
+            required: true
+          }
         };
 
         var validator = new Validator({validate: asyncSchema});
         validators.push(validator);
-        var customer = this.getCustomerFactory({name: 'sanji', age: 2}, {validators:validators});
+        var customer = this.getCustomerFactory({name: 'sanji', age: 2}, {validators: validators});
         var promise = customer.isValid();
         promise.fail(callback);
 

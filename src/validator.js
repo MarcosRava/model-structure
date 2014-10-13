@@ -1,28 +1,25 @@
 var Validator;
-var ValidationError = require('./validation-error.js');
-var schema = require('async-validate');
-var validateOptions = {first : true, single: true};
-var util = require ('util');
-var async = require('async');
-var Q = require('q');
-
-var _messages = {
-  'en': schema.messages.clone()
-};
-var _locale = 'en';
+var ValidationError          = require('./validation-error.js');
+var AsyncValidate            = require('async-validate');
+var util                     = require('util');
+var async                    = require('async');
+var Q                        = require('q');
+var defaultValidationOptions = {first : true, single: true};
+var _messages                = {'en': AsyncValidate.messages.clone()};
+var _locale                  = 'en';
 
 module.exports = Validator = (function () {
 
   function Validator(args) {
-    args = args || {};
+    args          = args || {};
     this.validate = args.validate;
   }
 
-  Validator.validate = validate;
+  Validator.validate          = validate;
+  Validator.getMessages       = getMessages;
+  Validator.addMessages       = addMessages;
+  Validator.setLocale         = setLocale;
   Validator.prototype.isValid = isValid;
-  Validator.getMessages = getMessages;
-  Validator.addMessages = addMessages;
-  Validator.setLocale = setLocale;
 
   return Validator;
 
@@ -37,8 +34,8 @@ function getLocale() {
 }
 
 function getMessages(locale) {
-  var cloned = JSON.parse(JSON.stringify(_messages[locale || getLocale()]));
-  return cloned;
+  locale = locale || getLocale();
+  return JSON.parse(JSON.stringify(_messages[locale]));
 }
 
 function addMessages(locale, messages) {
@@ -46,13 +43,13 @@ function addMessages(locale, messages) {
 }
 
 function isValid(model, callback) {
-  callback = callback || function() {};
+  callback = callback || function () {};
   var deferred = Q.defer();
   var promise = deferred.promise;
   if (typeof this.validate === 'function') {
     if (this.validate.length === 1)
       this.validate.call(model, function (err, fields) {
-        if(err) {
+        if (err) {
           err = checkError(err);
           deferred.reject(err, fields);
         } else {
@@ -64,17 +61,17 @@ function isValid(model, callback) {
       this.validate.call(model, deferred.resolve, reject, deferred.notify);
     }
     else {
-      var err = this.validate.call(model);
+      var err = this.validate.call(model, callback);
       err = checkError(err);
       callback(err);
     }
   }
   else {
-    var validator = new schema(this.validate);
-    validateOptions.messages = getMessages();
-    promise = Q.Promise(function(resolve, reject, notify) {
-      validator.validate(model, validateOptions, function(err, fields) {
-        if(err) {
+    var validator = new AsyncValidate(this.validate);
+    defaultValidationOptions.messages = getMessages();
+    promise = Q.Promise(function (resolve, reject, notify) {
+      validator.validate(model, defaultValidationOptions, function (err, fields) {
+        if (err) {
           reject(err);
         } else {
           resolve(null);
@@ -84,23 +81,22 @@ function isValid(model, callback) {
   }
   function reject(err) {
     err = checkError(err);
-    deferred.reject (err);
+    deferred.reject(err);
   }
   return promise;
 }
 
 function checkError(err) {
-  if (!err || !err.message || !err.field) throw new Error("Invalid constructor");
+  if (!err || !err.message || !err.field) throw new Error('Invalid constructor');
   return [new ValidationError(err.message, err.field)];
 }
 
 function validate(model, validators, callback) {
-  callback = callback || function() {};
-  var arr =[];
-  for(var i in validators) {
+  var arr = [];
+  for (var i in validators) {
     var _validator = validators[i];
-    if (!_validator instanceof Validator) throw new Error("Validator not valid", _validator);
-    arr.push( _validator.isValid(model));
+    if (!_validator instanceof Validator) throw new Error('Validator not valid', _validator);
+    arr.push(_validator.isValid(model));
 
   }
   Q.all(arr)
@@ -111,14 +107,14 @@ function validate(model, validators, callback) {
 function arrayModel(rule, value, callback, source, options) {
   var funcs = [];
 
-  for(var i in value) {
+  for (var i in value) {
     funcs.push(value[i].isValid.bind(value[i]));
   }
 
   async.series(funcs, function (errors, iterator) {
     var position = funcs.length - (funcs.length - iterator.length) - 1;
     for (var err in errors) {
-      errors[err].field = rule.field +  "[" + position + "]." + errors[err].field;
+      errors[err].field = rule.field +  '[' + position + '].' + errors[err].field;
     }
     callback(errors);
   });
@@ -131,16 +127,16 @@ function nested(rule, value, callback, source, options) {
 
   if (!(value instanceof source.super_)) {
     return callback([ new ValidationError(
-      util.format(schema.messages.types.object, rule.field, 'object'),
+      util.format(AsyncValidate.messages.types.object, rule.field, 'object'),
       rule.field)]);
   }
   value.isValid(function (errors) {
     for (var err in errors) {
-      errors[err].field = rule.field +  "." + errors[err].field;
+      errors[err].field = rule.field +  '.' + errors[err].field;
     }
     callback(errors);
   });
 }
 
-schema.register('arrayModel', arrayModel);
-schema.register('nested', nested);
+AsyncValidate.register('arrayModel', arrayModel);
+AsyncValidate.register('nested', nested);

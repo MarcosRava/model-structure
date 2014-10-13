@@ -1,11 +1,10 @@
 var Validator        = require('../validator');
-var Repository       = require('../repository.js');
 var swaggerHelper    = require('../helpers/swagger-helper.js');
 var validationHelper = require('../helpers/validator-helper.js');
 var propertyHelper   = require('../helpers/property-helper.js');
 var dbHelper         = require('../helpers/db-helper.js');
 var extend           = require('extend');
-var util           = require('util');
+var util             = require('util');
 var Model;
 var Q = require('q');
 
@@ -31,10 +30,6 @@ module.exports = Model = (function () {
   Model.setLocale = setLocale;
   Model.getSchema = getSchema;
 
-  Model.prototype.create     = require('./create.js')(Model, Repository, initialize);
-  Model.prototype.load       = require('./load.js')(Model, Repository, initialize);
-  Model.prototype.update     = require('./update.js')(Model, Repository, initialize);
-  Model.prototype.destroy    = require('./destroy.js')(Model, Repository, initialize);
   Model.prototype.isValid    = isValid;
 
   this.validators = [];
@@ -61,7 +56,6 @@ function init(ref, schema) {
     }
   });
   ref.prototype.super_ = Model;
-  ref.get = require('./get.js')(Model, Repository, initialize);
 
 }
 
@@ -102,7 +96,6 @@ function initialize(args, schema) {
   }
 
   this.constructor.prototype.access = access;
-  schema.repository = schema.repository || ref.repository || Model.repository || new Repository();
   return this;
 }
 
@@ -118,7 +111,6 @@ function isValid(optionalValidators, callback) {
     } else if (typeof optionalValidators === 'function') {
       callback = optionalValidators;
     }
-    callback = callback || function() {};
   }
 
   return Validator.validate(this, validators, callback);
