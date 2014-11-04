@@ -47,8 +47,6 @@ $ npm install model-structure
  * `data` - object data attributes
  * `options` - Model options
    - ### options
-
-     - `repository` - [Repository Object](#using-repositories) - contains object with crud functions
      - `validator`- [Validators Array](#custom-validations) - an array with validators to be used against object data
 
 ## Usage
@@ -104,10 +102,6 @@ schema.messages = {
   "float": "Float error message",
 }
 ```
-
-#### `schema.notInstantiate = false`
-
-If `true`, gets exactly the return data from Repository.
 
 #### `schema.properties = {}`
 
