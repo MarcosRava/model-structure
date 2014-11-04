@@ -36,33 +36,6 @@ describe('Validation', function () {
       });
     });
 
-    it('validations length', function (done) {
-      var validators = [];
-      var validator = new Validator({validate: firstLetterUpperCase});
-      var error = this.error;
-
-      function firstLetterUpperCase(done) {
-        if (this.name[0].toUpperCase() === this.name[0]) {
-          done();
-        } else {
-          done(error);
-        }
-      }
-      validators.push(validator);
-      var customer = this.getCustomerFactory({name: 'Sanji', email:'foo@dumb.com'}, {validators:validators});
-      customer.create()
-      .then(function(customer) {
-        customer.name = 'sanji';
-        return customer.update();
-      })
-      .fail(function (err) {
-        expect(err[0].field).to.be(error.field);
-        expect(err[0].message).to.contain(error.message);
-        expect(customer.access('validators').length).to.be(2);
-        done();
-      });
-    });
-
     it('should trigger validations parameter form Validator', function (done) {
       var customer = this.getCustomerFactory({name: 'sanji', email:'foo@dumb.com'});
       var validators = [];

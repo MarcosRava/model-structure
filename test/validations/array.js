@@ -42,18 +42,6 @@ describe('Validation', function () {
         });
       });
 
-      it('should return Model instances', function (done) {
-        var customer = this.getCustomerFactory({name:"Marcos", hdhd:56756, email:'foo@dumb.com'});
-        customer.create(function (err) {
-          Customer.get(function(err, customers) {
-            expect(err).to.be(null);
-            expect(customers).to.be.an(Array);
-            expect(customers[0]).to.be.a(Customer);
-            done();
-          });
-        });
-      });
-
     });
 
   });

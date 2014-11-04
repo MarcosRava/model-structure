@@ -6,7 +6,6 @@
 
 It can:
 
-* Set a custom repository to create, update, get and delete
 * Get Swagger models
 * Get db-migrate JSON
 * Nested objects support (validations too!)
@@ -20,8 +19,6 @@ It can:
 1. [Installation](#installation)
 2. [Usage](#usage)
   - [Schema Declaration](#schema-declaration)
-  - [Using Repositories](#using-repositories)
-  - [Validating Models](#validating-models)
   - [Swagger](#swagger)
   - [Node DB Migrate](#node-db-migrate)
   - [Messages](#messages)
@@ -86,8 +83,8 @@ Model.init(Lead, schema);
 
 var data = {name: 'Kurosaki Ichigo', email: 'ichi@soulsociety.com'};
 var lead = new Lead(data);
-lead.create(function(err, leadResponse) {
-  // return created lead
+lead.isValid().then(function() {
+  // Do something using this
 });
 ```
 
@@ -134,69 +131,6 @@ schema.properties = {
 }
 ```
 
-### Using Repositories
-
-The Model calls repository's functions passing object with `this` context.
-
-```js
-var datas = {};
-// Simple repository to use memory to save data
-
-function Repository() {
-  Repository.prototype.create = function create(callback) {
-    this.id = new Date().getTime();
-    datas[this.id] = this;
-    if (typeof callback === 'function') callback(null, this);
-  };
-
-  Repository.prototype.get = function get(args, callback) {
-    var data = [];
-    for (var i in datas) data.push(JSON.parse(JSON.stringify(datas[i])));
-    callback(null, data);
-  };
-
-  Repository.prototype.load = function load(args, callback) {
-    args = args || {};
-    var data = args.data || {};
-    if (args.id) {
-      data = datas[args.id];
-    }
-    callback(null, data);
-  };
-
-  Repository.prototype.update = function update(callback) {
-    datas[this.id] = this;
-    if (typeof callback === 'function') callback(null, this);
-  };
-
-  Repository.prototype.destroy = function destroy(callback) {
-    delete datas[this.id];
-    if (typeof callback === 'function') callback(null, this);
-  };
-}
-
-var data = {name: 'Kurosaki Ichigo', email: 'ichi@soulsociety.com'};
-var options = {};
-options.repository = new Repository();
-var lead = new Lead(data, options);
-lead.create(function(err, leadResponse) {
-  lead.load({id:lead.id}, function (err, secondResponse) {
-    // get saved lead;
-  });
-});
-```
-
-### Validating Models
-The validations methods are fired before `create` or `update` methods. But you may trigger it directly:
-```js
-var data = {name: 'Kurosaki Ichigo', email: 'ichi@soulsociety.com'};
-options.repository = new Repository();
-var lead = new Lead(data, options);
-lead.isValid(function(err, fields) {
-
-});
-```
-
 ### Custom Validations
 ```js
 var Validator = Model.Validator;
@@ -213,13 +147,13 @@ function firstLetterLowerCase(done) {
   }
 }
 validators.push(validator);
-lead.isValid(validators, function (err) {
+lead.isValid(validators).fail(function (err) {
   expect(err[0].field).to.be(error.field);
   expect(err[0].message).to.contain(error.message);
   done();
 });
 // OR
-Validator.validate(lead, validators, function (err) {
+Validator.validate(lead, validators).fail(function (err) {
   expect(err[0].field).to.be(error.field);
   expect(err[0].message).to.contain(error.message);
   done();
@@ -287,15 +221,15 @@ Add custom error messages to field or validation
   var lead = new Lead({id:"not a valid integer"});
   Model.addMessages('pt-BR', {types: {integer: "%s não é um inteiro"}});
   Model.setLocale('pt-BR');
-  lead.isValid(function (err) {
+  lead.isValid().fail(function (err) {
     expect(err[0].field).to.be('id');
     expect(err[0].message).to.contain('id não é um inteiro');
     Model.setLocale('en');
-    lead.isValid(function (err2) {
-      expect(err2[0].field).to.be('active');
-      expect(err2[0].message).to.contain('id is not an integer');
-    });
-  });
+    return lead.isValid();
+  }).fail(function (err) {
+    expect(err[0].field).to.be('active');
+    expect(err[0].message).to.contain('id is not an integer');
+  })
 
 ```
 
