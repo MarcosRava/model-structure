@@ -52,6 +52,7 @@ function getValidation(schema, attr) {
     case "decimal":
     case "float":
       obj.type = "number";
+      obj.message = obj.messages.minimum;
       break;
     case "object":
       obj.type = "nested";

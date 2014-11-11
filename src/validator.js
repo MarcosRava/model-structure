@@ -72,6 +72,7 @@ function isValid(model, callback) {
     promise = Q.Promise(function (resolve, reject, notify) {
       validator.validate(model, defaultValidationOptions, function (err, fields) {
         if (err) {
+          err = getCustomErrorMessages(err, model.constructor.schema.properties);
           reject(err);
         } else {
           resolve(null);
@@ -83,6 +84,20 @@ function isValid(model, callback) {
     err = checkError(err);
     deferred.reject(err);
   }
+
+  function getCustomErrorMessages(errors, properties) {
+    var error;
+    for (var i = 0, j = errors.length; i < j; i++) {
+      error = errors[i];
+      if (properties[error.field] && properties[error.field].messages && properties[error.field].messages[error.type]) {
+        error.message = properties[error.field].messages[error.type];
+      } else if (properties[error.field] && properties[error.field].alias) {
+        error.message = error.message.replace(error.field, properties[error.field].alias);
+      }
+    }
+    return errors;
+  }
+
   return promise;
 }
 
