@@ -4,7 +4,7 @@ var AsyncValidate            = require('async-validate');
 var util                     = require('util');
 var async                    = require('async');
 var Q                        = require('q');
-var defaultValidationOptions = {first : true, single: true};
+var defaultValidationOptions = {first : false, single: false};
 var _messages                = {'en': AsyncValidate.messages.clone()};
 var _locale                  = 'en';
 
@@ -90,9 +90,9 @@ function isValid(model, callback) {
     for (var i = 0, j = errors.length; i < j; i++) {
       error = errors[i];
       if (properties[error.field] && properties[error.field].messages && properties[error.field].messages[error.type]) {
-        error.message = properties[error.field].messages[error.type];
+        error.message = properties[error.field].messages[error.type].trim();
       } else if (properties[error.field] && properties[error.field].alias) {
-        error.message = error.message.replace(error.field, properties[error.field].alias);
+        error.message = error.message.replace(error.field, properties[error.field].alias).trim();
       }
     }
     return errors;
